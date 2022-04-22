@@ -17,4 +17,5 @@ model user {
   avatarFileName String?
   createdAs      DateTime @default(now())
   updateAs       DateTime @updatedAt
+  count          Int      @default(autoincrement())
 }
