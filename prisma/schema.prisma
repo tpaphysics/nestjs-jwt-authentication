@@ -14,8 +14,9 @@ model user {
   id             String   @id @default(uuid())
   email          String   @unique
   name           String
+  age            Int
+  gender         String
   avatarFileName String?
-  createdAs      DateTime @default(now())
-  updateAs       DateTime @updatedAt
-  count          Int      @default(autoincrement())
+  createdAt      DateTime @default(now())
+  updateAt       DateTime @updatedAt
 }

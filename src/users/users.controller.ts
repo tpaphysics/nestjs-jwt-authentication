@@ -14,7 +14,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PaginateUserQueryDto } from './dto/paginate-user-query.dto';
+import { findAllUserDto } from './dto/findAll-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -26,7 +26,7 @@ export class UsersController {
   }
 
   @Get()
-  findAll(@Query() query: PaginateUserQueryDto) {
+  findAll(@Query() query: findAllUserDto) {
     return this.usersService.findAll(query);
   }
 

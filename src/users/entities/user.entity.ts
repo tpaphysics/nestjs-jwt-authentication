@@ -4,7 +4,9 @@ export class User implements Prisma.userUncheckedCreateInput {
   id?: string;
   email: string;
   name: string;
+  age: number;
+  gender: string;
   avatarFileName?: string;
-  createdAs?: string | Date;
-  updateAs?: string | Date;
+  createdAt?: string | Date;
+  updateAt?: string | Date;
 }

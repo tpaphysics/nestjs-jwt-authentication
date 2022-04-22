@@ -1,13 +1,14 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { PaginateUserQueryDto } from './dto/paginate-user-query.dto';
+import { findAllUserDto } from './dto/findAll-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { FindAllUserResponse } from './interfaces/user.interfaces';
 
 @Injectable()
 export class UsersService {
@@ -19,30 +20,41 @@ export class UsersService {
     });
   }
 
-  async findAll(query: PaginateUserQueryDto): Promise<any> {
+  async findAll(query: findAllUserDto): Promise<FindAllUserResponse> {
     const { page, take } = query;
 
     const totalUsers = await this.prisma.user.count();
-    const totalPages = Math.trunc(totalUsers / take);
+
+    if (!totalUsers || totalUsers == 0) {
+      throw new InternalServerErrorException('Not found users!');
+    }
+
+    if (take > totalUsers) {
+      throw new BadRequestException('Invalid number of users!');
+    }
+
+    const totalPages = Math.ceil(totalUsers / take);
+
+    if (page > totalPages) {
+      throw new BadRequestException(
+        `Maximum number of pages are ${totalPages}!`,
+      );
+    }
 
     const users = await this.prisma.user.findMany({
       skip: (page - 1) * take,
       take,
       orderBy: {
-        createdAs: 'asc',
+        createdAt: 'asc',
       },
     });
-    if (page > totalPages) {
-      throw new BadRequestException(
-        `Maximum number of pages are ${totalPages}`,
-      );
-    }
+
     return {
       paginate: {
         page: page,
         totalPages,
       },
-      ...users,
+      users: [...users],
     };
   }
 
