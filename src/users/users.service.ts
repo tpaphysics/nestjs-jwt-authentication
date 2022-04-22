@@ -28,22 +28,27 @@ export class UsersService {
     });
   }
 
-  update(
+  async update(
     file: Express.Multer.File,
     id: string,
     data: UpdateUserDto,
   ): Promise<User> {
-    return this.prisma.user.update({
+    const updatedUser = await this.prisma.user.update({
       where: {
         id,
       },
       data: file
         ? {
             ...data,
-            avatarFileName: `${process.env.AVATAR_USER_HOST}/${file.filename}`,
+            avatarFileName: file.filename,
           }
         : data,
     });
+    const { avatarFileName } = updatedUser;
+    return {
+      ...updatedUser,
+      avatarFileName: `${process.env.AVATAR_USER_HOST}/${avatarFileName}`,
+    };
   }
 
   remove(id: string): Promise<User> {
