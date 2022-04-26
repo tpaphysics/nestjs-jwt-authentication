@@ -185,7 +185,7 @@ export default class MulterConfigService implements MulterOptionsFactory {
 }
 ```
 
-Existem muita vatagens na utilização do NestJs para criação de APIs uma delas é o fato dele respeitar os principios do <strong>SOLID</strong>. Desta forma forma fica mais facil o trabalho em grupo com uma aquitetura padrão definida. O NestJs usa uma aquitera muito semelhande a do framework [Angular](https://angular.io/), com uso de classes extendidas e decorators. Particularmente achei bem elegante o uso da biblioteca [class-validator](https://www.npmjs.com/package/class-validator) para validação de campos através de decorators nos Data Transfer Objects (DTOs) :
+Existem muita vatagens na utilização do NestJs para criação de APIs uma delas é o fato dele respeitar os principios do <strong>SOLID</strong>. Desta forma forma fica mais facil o trabalho em grupo com uma aquitetura padrão definida. O NestJs usa uma aquitetura muito semelhante a do framework [Angular](https://angular.io/), com uso de classes extendidas e decorators. Particularmente achei bem elegante o uso da biblioteca [class-validator](https://www.npmjs.com/package/class-validator) para validação de campos através de decorators nos Data Transfer Objects (DTOs) :
 
 ```typescript
 import { User } from '../entities/user.entity';
