@@ -1,13 +1,14 @@
 import { User } from '../entities/user.entity';
 import {
-  Equals,
   IsEmail,
   IsIn,
   IsInt,
   IsString,
   Matches,
   Max,
+  MaxLength,
   Min,
+  MinLength,
 } from 'class-validator';
 
 export class CreateUserDto extends User {
@@ -17,6 +18,13 @@ export class CreateUserDto extends User {
   @IsString()
   @Matches(/[a-zA-Z0-9_-]{2,20}/)
   name: string;
+
+  @MinLength(6)
+  @MaxLength(20)
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+    message: 'Password too weak!',
+  })
+  password: string;
 
   @IsInt()
   @Min(1)

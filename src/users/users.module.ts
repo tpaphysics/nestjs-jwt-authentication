@@ -6,6 +6,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import MulterConfigService from 'src/multer/multer-config';
 
 @Module({
+  exports: [UsersService],
   imports: [
     PrismaModule,
     MulterModule.registerAsync({

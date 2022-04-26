@@ -9,15 +9,29 @@ import { findAllUserDto } from './dto/findAll-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { FindAllUserResponse } from './interfaces/user.interfaces';
+import * as bycrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateUserDto): Promise<User> {
-    return await this.prisma.user.create({
-      data,
+    const { password } = data;
+    const hash = await bycrypt.hash(password, 10);
+
+    if (!hash) {
+      throw new InternalServerErrorException('Problem saving password!');
+    }
+    const newUser = await this.prisma.user.create({
+      data: {
+        ...data,
+        password: await hash,
+      },
     });
+    return {
+      ...newUser,
+      password: undefined,
+    };
   }
 
   async findAll(query: findAllUserDto): Promise<FindAllUserResponse> {
@@ -47,6 +61,17 @@ export class UsersService {
       orderBy: {
         createdAt: 'asc',
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        age: true,
+        gender: true,
+        avatarFileName: true,
+        password: false,
+        createdAt: true,
+        updateAt: true,
+      },
     });
 
     return {
@@ -58,12 +83,31 @@ export class UsersService {
     };
   }
 
-  findOne(id: string): Promise<User> {
-    return this.prisma.user.findUnique({
+  async findOne(id: string): Promise<User> {
+    const uniqueUser = await this.prisma.user.findUnique({
       where: {
         id,
       },
     });
+    if (!uniqueUser) {
+      throw new BadRequestException('"User does not exist!');
+    }
+    return {
+      ...uniqueUser,
+      password: undefined,
+    };
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    const oneUser = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    return {
+      ...oneUser,
+      password: undefined,
+    };
   }
 
   async update(
@@ -86,14 +130,19 @@ export class UsersService {
     return {
       ...updatedUser,
       avatarFileName: `${process.env.AVATAR_USER_HOST}/${avatarFileName}`,
+      password: undefined,
     };
   }
 
-  remove(id: string): Promise<User> {
-    return this.prisma.user.delete({
+  async remove(id: string): Promise<User> {
+    const removedUser = await this.prisma.user.delete({
       where: {
         id,
       },
     });
+    return {
+      ...removedUser,
+      password: undefined,
+    };
   }
 }
