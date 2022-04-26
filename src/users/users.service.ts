@@ -104,10 +104,7 @@ export class UsersService {
         email,
       },
     });
-    return {
-      ...oneUser,
-      password: undefined,
-    };
+    return oneUser;
   }
 
   async update(

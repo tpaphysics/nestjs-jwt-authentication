@@ -15,7 +15,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { findAllUserDto } from './dto/findAll-user.dto';
+import { IsPublicRoute } from 'src/auth/decorators/is-public-route.decorator';
 
+@IsPublicRoute()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

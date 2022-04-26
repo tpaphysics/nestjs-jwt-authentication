@@ -7,67 +7,245 @@
 
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<img src="https://img.shields.io/badge/yarn-%232C8EBB.svg?style=for-the-badge&logo=yarn&logoColor=white" alt="yarn" />
 
-## Description
+<img src="https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJs" />
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+<img src="https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white" alt="Prisma.io" />
 
-## Installation
+<img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
 
-```bash
-$ npm install
+<img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="Prisma" />
+
+## Descrição
+
+Nessa postagem criamos uma REST API com CRUD de usários juntamente com fluxo de autenticação JWT utilizando o framework [Nest](https://nestjs.com/). Desta forma podemos criar, deletar, pesquisar e atualizar uma tabela de usuários no banco de dados. Usamos também o [Prisma](https://www.prisma.io/) como ORM e criamos um container com o banco de dados postgres usando o [Docker Compose](https://docs.docker.com/compose/).
+
+Criamos um schema bem simples no arquivo <strong>schema.prisma</strong> para criação de um usuário no banco de dados:
+
+```prisma
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  name           String
+  password       String
+  age            Int
+  gender         String
+  avatarFileName String?
+  createdAt      DateTime @default(now())
+  updateAt       DateTime @updatedAt
+}
+
 ```
 
-## Running the app
+## Rotas
+
+```
+Mapped {/login, POST} route +1ms
+Mapped {/login, POST} route +1ms
+Mapped {/users, POST} route
+Mapped {/users, GET} route +0ms
+Mapped {/users/:id, GET} route +1ms
+Mapped {/users/:id, PATCH} route +1ms
+Mapped {/users/:id, DELETE} route +1ms
+```
+
+Todas as rotas são definidas como privadas por questões de segurança. Para definir uma rota como pública, basta usar o dacorator @IsPublicRoute():
+
+```typescript
+@Controller()
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
+
+  @IsPublicRoute()
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Request() req: AuthRequest) {
+    return this.authService.login(req.user);
+  }
+}
+```
+
+Após o usuário enviar uma uma requisição do tipo post para a rota <strong>/login</strong> com body do tipo:
+
+```json
+{
+  "email": "teste@teste.com",
+  "password": "1Teste"
+}
+```
+
+Recebemos como resposta:
+
+```json
+{
+  "user": {
+    "id": "8fcbe285-7cd3-41f2-8d8a-d5aa0071a704",
+    "email": "teste@teste.com",
+    "name": "teste",
+    "age": 32,
+    "gender": "masculine",
+    "avatarFileName": null,
+    "createdAt": "2022-04-26T21:46:48.318Z",
+    "updateAt": "2022-04-26T21:46:48.318Z"
+  },
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZmNiZTI4NS03Y2QzLTQxZjItOGQ4YS1kNWFhMDA3MWE3MDQiLCJlbWFpbCI6InRlc3RlQHRlc3RlLmNvbSIsIm5hbWUiOiJ0ZXN0ZSIsImlhdCI6MTY1MTAwOTYzMywiZXhwIjoxNjUzNjAxNjMzfQ.9D_7gjQ96aRYYahZVZQqQLgEpD699YOkhKozy6EYgsA"
+}
+```
+
+## Instalação
+
+```bash
+# Instalação das dependências
+$ yarn
+
+# Iniciar container com banco de dados postgress (Você precisa ter o docker instalado!):
+$ yarn up:db
+
+# Migração dos models definidos no schema.prisma para o banco de dados
+$ yarn prisma migrate dev
+```
+
+## Iniciando o servidor
 
 ```bash
 # development
-$ npm run start
+$ yarn start
 
 # watch mode
-$ npm run start:dev
+$ yarn start:dev
 
 # production mode
-$ npm run start:prod
+$ yarn start:prod
 ```
 
-## Test
+## Observação
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Para remover o container criado:
+$ yarn rm:db
 ```
 
-## Support
+Para que a API funcione você deve criar alguns usários no banco de dados. Você pode usar algum cliente http como postman, insomnia, ect ou usar o prisma studio:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+$ yarm prisma studio
+```
 
-## Stay in touch
+## **💥 Considerações**
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+No médodo <strong>update</strong> conseguimos fazer uploads de imagens para pasta <strong>upload</strong> no diretório corrente do projeto. O multer foi configurado no arquivo <strong>multer-config.ts</strong>. Para entender a integração do multer com NestJs basta ler a [documentação](https://docs.nestjs.com/techniques/file-upload). Abaixo configuramos o multer para filtar arquivos de imagens com extensões jpeg, jpg e png com tamanho máximo defindo no arquivo .env na variável AVATAR_SIZE_FILE.
 
-## License
+```typescript
+// multer-config.js
 
-Nest is [MIT licensed](LICENSE).
+import { Injectable, UnsupportedMediaTypeException } from '@nestjs/common';
+import { randomBytes } from 'crypto';
+
+import {
+  MulterModuleOptions,
+  MulterOptionsFactory,
+} from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+
+@Injectable()
+export default class MulterConfigService implements MulterOptionsFactory {
+  createMulterOptions(): MulterModuleOptions {
+    return {
+      storage: diskStorage({
+        destination: './upload',
+        filename: (_req, file, cb) => {
+          const { mimetype } = file;
+          const [, extension] = mimetype.split('/', 2);
+          const fileHashName = randomBytes(16).toString('hex');
+          const name = `${fileHashName}.${extension}`;
+          return cb(null, name);
+        },
+      }),
+      limits: { fileSize: Number(process.env.AVATAR_SIZE_FILE) * 1024 * 1024 },
+      fileFilter: (
+        _req: any,
+        file: Express.Multer.File,
+        cb: (error: Error | null, acceptFile: boolean) => void,
+      ) => {
+        if (['image/png', 'image/jpg', 'image/jpeg'].includes(file.mimetype)) {
+          cb(null, true);
+        } else {
+          cb(
+            new UnsupportedMediaTypeException(
+              'Only use jpg jpeg or png files!',
+            ),
+            false,
+          );
+        }
+      },
+    };
+  }
+}
+```
+
+Existem muita vatagens na utilização do NestJs para criação de APIs uma delas é o fato dele respeitar os principios do <strong>SOLID</strong>. Desta forma forma fica mais facil o trabalho em grupo com uma aquitetura padrão definida. O NestJs usa uma aquitera muito semelhande a do framework [Angular](https://angular.io/), com uso de classes extendidas e decorators. Particularmente achei bem elegante o uso da biblioteca [class-validator](https://www.npmjs.com/package/class-validator) para validação de campos através de decorators nos Data Transfer Objects (DTOs) :
+
+```typescript
+import { User } from '../entities/user.entity';
+import {
+  IsEmail,
+  IsIn,
+  IsInt,
+  IsString,
+  Matches,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+} from 'class-validator';
+
+export class CreateUserDto extends User {
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @Matches(/[a-zA-Z0-9_-]{2,20}/)
+  name: string;
+
+  @MinLength(6)
+  @MaxLength(20)
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+    message: 'Password too weak!',
+  })
+  password: string;
+
+  @IsInt()
+  @Min(1)
+  @Max(120)
+  age: number;
+
+  @IsString()
+  @IsIn(['masculine', 'feminine'])
+  gender: string;
+}
+```
+
+Isso contribiu para um código escalavel e _clean_. Outro fator interressante é o tratamento de erros de forma global através da utilização de middlewares. Existem inumeras outras vantagens na utilização NestJs para criação de microservices, serveless, etc ... que não falarei para que a postagem não fique grande. Mas se você não conhece, vale a pena conferir o [NestJs](https://nestjs.com/).
+
+## **👨‍🚀 Autor**
+
+<a href="https://github.com/tpaphysics">
+<img alt="Thiago Pacheco" src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/46402647?v=4?v=4&h=300&w=300&fit=cover&mask=circle&maxage=7d" width="100px"/>
+  <br />
+  <sub>
+    <b>Thiago Pacheco de Andrade</b>
+  </sub>
+</a>
+<br />
+
+👋 Meus contatos!
+
+[![Linkedin Badge](https://img.shields.io/badge/-LinkedIn-blue?style=for-the-badge&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/thiago-pacheco-200a1a86/)](https://www.linkedin.com/in/thiago-pacheco-200a1a86/)
+[![Gmail Badge](https://img.shields.io/badge/-Gmail-c14438?style=for-the-badge&logo=Gmail&logoColor=white&link=mailto:physics.posgrad.@gmail.com)](mailto:physics.posgrad.@gmail.com)
+
+## Licença
+
+Veja o arquivo [MIT license](LICENSE).

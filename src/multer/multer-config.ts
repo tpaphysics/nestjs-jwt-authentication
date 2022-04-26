@@ -21,7 +21,7 @@ export default class MulterConfigService implements MulterOptionsFactory {
           return cb(null, name);
         },
       }),
-      limits: { fileSize: Number(process.env.AVATAR_SIZE) * 1024 * 1024 },
+      limits: { fileSize: Number(process.env.AVATAR_SIZE_FILE) * 1024 * 1024 },
       fileFilter: (
         _req: any,
         file: Express.Multer.File,
