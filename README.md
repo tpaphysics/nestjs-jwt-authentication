@@ -228,12 +228,10 @@ take : número de resultados retornados
 
 De maneira intuitiva, temos:
 
-$$
-\begin{align*}
-page>1 \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\\
+```
+page>1
 skip=(page - 1)take
-\end{align*}
-$$
+```
 
 Enviamos esses parâmatros para o backend através dos query params em uma requisição do tipo get.
 
