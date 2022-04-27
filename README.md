@@ -127,7 +127,7 @@ $ yarn start:prod
 $ yarn rm:db
 ```
 
-Para que a API funcione você deve criar alguns usários no banco de dados. Você pode usar algum cliente http como postman, insomnia, ect ou usar o prisma studio:
+Para que a API funcione você deve criar alguns usuários no banco de dados. Você pode usar algum cliente http como postman, insomnia, ect ou usar o prisma studio:
 
 ```bash
 $ yarm prisma studio
