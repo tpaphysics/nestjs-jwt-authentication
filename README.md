@@ -187,12 +187,33 @@ export default class MulterConfigService implements MulterOptionsFactory {
 
 ## Paginação usando o Prisma
 
-Implementamos um sistema de paginação do tipo offset utilizando o <strong>skip</strong> e o <strong>take</strong> no user.service.ts no método findAllUsers.
+Implementamos um sistema de paginação do tipo offset utilizando o Prisma no arquivo <strong>user.service.ts</strong>
 
 ```typescript
-// user.service.ts método findAllUsers
+// user.service.ts
 
-  const users = await this.prisma.user.findMany({
+async findAll(query: findAllUserDto): Promise<FindAllUserResponse> {
+    const { page, take } = query;
+
+    const totalUsers = await this.prisma.user.count();
+
+    if (!totalUsers || totalUsers == 0) {
+      throw new InternalServerErrorException('Not found users!');
+    }
+
+    if (take > totalUsers) {
+      throw new BadRequestException('Invalid number of users!');
+    }
+
+    const totalPages = Math.ceil(totalUsers / take);
+
+    if (page > totalPages) {
+      throw new BadRequestException(
+        `Maximum number of pages are ${totalPages}!`,
+      );
+    }
+
+    const users = await this.prisma.user.findMany({
       skip: (page - 1) * take,
       take,
       orderBy: {
@@ -221,10 +242,8 @@ Implementamos um sistema de paginação do tipo offset utilizando o <strong>skip
   }
 ```
 
-```
-skip : resultados a serem ignordos
-take : número de resultados retornados
-```
+<strong>skip</strong>: Número de resultados a serem ignordos
+<strong>take</strong>: Número de resultados retornados após o skip
 
 De maneira intuitiva, temos:
 
@@ -239,7 +258,7 @@ Enviamos esses parâmatros para o backend através dos query params em uma requi
 http://localhost:3000/users?page=1&take=2
 ```
 
-E eles são validados no findAll-user.dto.ts como sendo do tipo númerico, inteiro e maior que 1
+E eles são validados no findAll-user.dto.ts como sendo do tipo númerico, inteiro e maior que 0
 
 ```typescript
 import { Type } from 'class-transformer';
