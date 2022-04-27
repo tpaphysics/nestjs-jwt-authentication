@@ -133,7 +133,7 @@ Para que a API funcione você deve criar alguns usários no banco de dados. Voc�
 $ yarm prisma studio
 ```
 
-## **💥 Considerações**
+## Upload de imagens com o multer
 
 No médodo <strong>update</strong> conseguimos fazer uploads de imagens para pasta <strong>upload</strong> no diretório corrente do projeto. O multer foi configurado no arquivo <strong>multer-config.ts</strong>. Para entender a integração do multer com NestJs basta ler a [documentação](https://docs.nestjs.com/techniques/file-upload). Abaixo configuramos o multer para filtar arquivos de imagens com extensões jpeg, jpg e png com tamanho máximo defindo no arquivo .env na variável AVATAR_SIZE_FILE.
 
@@ -184,6 +184,83 @@ export default class MulterConfigService implements MulterOptionsFactory {
   }
 }
 ```
+
+## Paginação usando o Prisma
+
+Implementamos um sistema de paginação do tipo offset utilizando o <strong>skip</strong> e o <strong>take</strong> no user.service.ts no método findAllUsers.
+
+```typescript
+// user.service.ts método findAllUsers
+
+  const users = await this.prisma.user.findMany({
+      skip: (page - 1) * take,
+      take,
+      orderBy: {
+        createdAt: 'asc',
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        age: true,
+        gender: true,
+        avatarFileName: true,
+        password: false,
+        createdAt: true,
+        updateAt: true,
+      },
+    });
+
+    return {
+      paginate: {
+        page: page,
+        totalPages,
+      },
+      users: [...users],
+    };
+  }
+```
+
+```
+skip : resultados a serem ignordos
+take : número de resultados retornados
+```
+
+De maneira intuitiva, temos:
+
+$$
+\begin{align*}
+page>1 \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\\
+skip=(page - 1)take
+\end{align*}
+$$
+
+Enviamos esses parâmatros para o backend através dos query params em uma requisição do tipo get.
+
+```url
+http://localhost:3000/users?page=1&take=2
+```
+
+E eles são validados no findAll-user.dto.ts como sendo do tipo númerico, inteiro e maior que 1
+
+```typescript
+import { Type } from 'class-transformer';
+import { IsInt, Min } from 'class-validator';
+import { User } from '../entities/user.entity';
+
+export class findAllUserDto extends User {
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page: number;
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  take: number;
+```
+
+## **💥 Considerações**
 
 Existem muita vatagens na utilização do NestJs para criação de APIs uma delas é o fato dele respeitar os principios do <strong>SOLID</strong>. Desta forma forma fica mais facil o trabalho em grupo com uma aquitetura padrão definida. O NestJs usa uma aquitetura muito semelhante a do framework [Angular](https://angular.io/), com uso de classes extendidas e decorators. Particularmente achei bem elegante o uso da biblioteca [class-validator](https://www.npmjs.com/package/class-validator) para validação de campos através de decorators nos Data Transfer Objects (DTOs) :
 
