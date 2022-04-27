@@ -127,7 +127,7 @@ $ yarn start:prod
 $ yarn rm:db
 ```
 
-Para que a API funcione você deve criar alguns usuários no banco de dados. Você pode usar algum cliente http como postman, insomnia, ect ou usar o prisma studio:
+Para que a API funcione você deve criar alguns usuários no banco de dados. Você pode usar algum cliente http como postman, insomnia, ou usar o prisma studio:
 
 ```bash
 $ yarm prisma studio
@@ -229,8 +229,8 @@ take : número de resultados retornados
 De maneira intuitiva, temos:
 
 ```
-page>1
-skip=(page - 1)take
+page > 0
+skip=(page-1)take
 ```
 
 Enviamos esses parâmatros para o backend através dos query params em uma requisição do tipo get.
