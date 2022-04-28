@@ -21,6 +21,44 @@
 
 Nessa postagem criamos uma REST API com CRUD de usários juntamente com fluxo de autenticação JWT utilizando o framework [Nest](https://nestjs.com/). Desta forma podemos criar, deletar, pesquisar e atualizar uma tabela de usuários no banco de dados. Usamos também o [Prisma](https://www.prisma.io/) como ORM e criamos um container com o banco de dados postgres usando o [Docker Compose](https://docs.docker.com/compose/).
 
+## Instalação
+
+```bash
+# Instalação das dependências
+$ yarn
+
+# Iniciar container com banco de dados postgress (Você precisa ter o docker instalado!):
+$ yarn up:db
+
+# Migração dos models definidos no schema.prisma para o banco de dados
+$ yarn prisma migrate dev
+```
+## Iniciando o servidor
+
+```bash
+# development
+$ yarn start
+
+# watch mode
+$ yarn start:dev
+
+# production mode
+$ yarn start:prod
+```
+
+## Observação
+
+```bash
+# Para remover o container criado:
+$ yarn rm:db
+```
+
+Para que a API funcione você deve criar alguns usuários no banco de dados. Você pode usar algum cliente http como postman, insomnia, ou usar o prisma studio:
+
+```bash
+$ yarm prisma studio
+```
+
 Criamos um schema bem simples no arquivo <strong>schema.prisma</strong> para criação de um usuário no banco de dados:
 
 ```prisma
@@ -93,46 +131,6 @@ Recebemos como resposta:
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZmNiZTI4NS03Y2QzLTQxZjItOGQ4YS1kNWFhMDA3MWE3MDQiLCJlbWFpbCI6InRlc3RlQHRlc3RlLmNvbSIsIm5hbWUiOiJ0ZXN0ZSIsImlhdCI6MTY1MTAwOTYzMywiZXhwIjoxNjUzNjAxNjMzfQ.9D_7gjQ96aRYYahZVZQqQLgEpD699YOkhKozy6EYgsA"
 }
 ```
-
-## Instalação
-
-```bash
-# Instalação das dependências
-$ yarn
-
-# Iniciar container com banco de dados postgress (Você precisa ter o docker instalado!):
-$ yarn up:db
-
-# Migração dos models definidos no schema.prisma para o banco de dados
-$ yarn prisma migrate dev
-```
-
-## Iniciando o servidor
-
-```bash
-# development
-$ yarn start
-
-# watch mode
-$ yarn start:dev
-
-# production mode
-$ yarn start:prod
-```
-
-## Observação
-
-```bash
-# Para remover o container criado:
-$ yarn rm:db
-```
-
-Para que a API funcione você deve criar alguns usuários no banco de dados. Você pode usar algum cliente http como postman, insomnia, ou usar o prisma studio:
-
-```bash
-$ yarm prisma studio
-```
-
 ## Upload de imagens com o multer
 
 No médodo <strong>update</strong> conseguimos fazer uploads de imagens para pasta <strong>upload</strong> no diretório corrente do projeto. O multer foi configurado no arquivo <strong>multer-config.ts</strong>. Para entender a integração do multer com NestJs basta ler a [documentação](https://docs.nestjs.com/techniques/file-upload). Abaixo configuramos o multer para filtar arquivos de imagens com extensões jpeg, jpg e png com tamanho máximo defindo no arquivo .env na variável AVATAR_SIZE_FILE.
