@@ -321,7 +321,7 @@ export class CreateUserDto extends User {
 }
 ```
 
-Isso contribiu para um código escalavel e _clean_. Outro fator interressante é o tratamento de erros de forma global através da utilização de middlewares. Existem inumeras outras vantagens na utilização NestJs para criação de microservices, serveless, etc ... que não falarei para que a postagem não fique grande. Mas se você não conhece, vale a pena conferir o [NestJs](https://nestjs.com/).
+Isso contribiu para um código escalavel e _clean_. Outro fator interressante é o tratamento de erros de forma global através da utilização de middlewares. Existem inumeras outras vantagens na utilização NestJs para criação de microservices, serveless, etc... não falarei para que a postagem não fique grande. Para mais informações, consulte a documentação do [NestJs](https://nestjs.com/).
 
 ## **👨‍🚀 Autor**
 
