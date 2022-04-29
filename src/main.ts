@@ -12,6 +12,7 @@ async function bootstrap() {
       //transformOptions: { enableImplicitConversion: true },
     }),
   );
+  app.enableCors({ origin: '*' }); //desability in production
 
   await app.listen(3000);
 }

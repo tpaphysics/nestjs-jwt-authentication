@@ -19,7 +19,7 @@
 
 ## Descrição
 
-Nessa postagem criamos uma REST API com CRUD de usários juntamente com fluxo de autenticação JWT utilizando o framework [Nest](https://nestjs.com/). Desta forma podemos criar, deletar, pesquisar e atualizar uma tabela de usuários no banco de dados. Usamos também o [Prisma](https://www.prisma.io/) como ORM e criamos um container com o banco de dados postgres usando o [Docker Compose](https://docs.docker.com/compose/).
+Nessa postagem criamos uma API Rest com CRUD de usários juntamente com fluxo de autenticação JWT utilizando o framework [Nest](https://nestjs.com/). Desta forma podemos criar, deletar, pesquisar e atualizar uma tabela de usuários no banco de dados. Usamos também o [Prisma](https://www.prisma.io/) como ORM e criamos um container com o banco de dados postgres usando o [Docker Compose](https://docs.docker.com/compose/).
 
 ## Instalação
 
@@ -33,6 +33,7 @@ $ yarn up:db
 # Migração dos models definidos no schema.prisma para o banco de dados
 $ yarn prisma migrate dev
 ```
+
 ## Iniciando o servidor
 
 ```bash
@@ -59,7 +60,7 @@ Para que a API funcione você deve criar alguns usuários no banco de dados. Voc
 $ yarm prisma studio
 ```
 
-Criamos um schema bem simples no arquivo <strong>schema.prisma</strong> para criação de um usuário no banco de dados:
+Criamos um schema no arquivo <strong>schema.prisma</strong> para criação de um usuário no banco de dados:
 
 ```prisma
 model User {
@@ -79,7 +80,6 @@ model User {
 ## Rotas
 
 ```
-Mapped {/login, POST} route +1ms
 Mapped {/login, POST} route +1ms
 Mapped {/users, POST} route
 Mapped {/users, GET} route +0ms
@@ -131,6 +131,7 @@ Recebemos como resposta:
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZmNiZTI4NS03Y2QzLTQxZjItOGQ4YS1kNWFhMDA3MWE3MDQiLCJlbWFpbCI6InRlc3RlQHRlc3RlLmNvbSIsIm5hbWUiOiJ0ZXN0ZSIsImlhdCI6MTY1MTAwOTYzMywiZXhwIjoxNjUzNjAxNjMzfQ.9D_7gjQ96aRYYahZVZQqQLgEpD699YOkhKozy6EYgsA"
 }
 ```
+
 ## Upload de imagens com o multer
 
 No médodo <strong>update</strong> conseguimos fazer uploads de imagens para pasta <strong>upload</strong> no diretório corrente do projeto. O multer foi configurado no arquivo <strong>multer-config.ts</strong>. Para entender a integração do multer com NestJs basta ler a [documentação](https://docs.nestjs.com/techniques/file-upload). Abaixo configuramos o multer para filtar arquivos de imagens com extensões jpeg, jpg e png com tamanho máximo defindo no arquivo .env na variável AVATAR_SIZE_FILE.
@@ -321,7 +322,7 @@ export class CreateUserDto extends User {
 }
 ```
 
-Isso contribiu para um código escalavel e _clean_. Outro fator interressante é o tratamento de erros de forma global através da utilização de middlewares. Existem inumeras outras vantagens na utilização NestJs para criação de microservices, serveless, etc... não falarei para que a postagem não fique grande. Para mais informações, consulte a documentação do [NestJs](https://nestjs.com/).
+Isso contribiu para um código _clean_ e escalável. Outro fator interressante é o tratamento de erros de forma global através da utilização de middlewares. Existem inumeras outras vantagens na utilização NestJs, ele pode ser usados para a criação de microserviços,serveless, etc... Para mais informações, consulte a documentação do [NestJs](https://nestjs.com/).
 
 ## **👨‍🚀 Autor**
 
