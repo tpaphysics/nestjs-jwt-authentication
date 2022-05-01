@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -16,22 +17,29 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateUserDto): Promise<User> {
-    const { password } = data;
+    const { email, password } = data;
+
+    const existUser = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (existUser) {
+      throw new ConflictException('User not available!');
+    }
+
     const hash = await bycrypt.hash(password, 10);
 
     if (!hash) {
       throw new InternalServerErrorException('Problem saving password!');
     }
-    const newUser = await this.prisma.user.create({
+    return await this.prisma.user.create({
       data: {
         ...data,
         password: await hash,
       },
     });
-    return {
-      ...newUser,
-      password: undefined,
-    };
   }
 
   async findAll(query: findAllUserDto): Promise<FindAllUserResponse> {
@@ -61,17 +69,6 @@ export class UsersService {
       orderBy: {
         createdAt: 'asc',
       },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        age: true,
-        gender: true,
-        avatarFileName: true,
-        password: false,
-        createdAt: true,
-        updateAt: true,
-      },
     });
 
     return {
@@ -92,19 +89,15 @@ export class UsersService {
     if (!uniqueUser) {
       throw new BadRequestException('"User does not exist!');
     }
-    return {
-      ...uniqueUser,
-      password: undefined,
-    };
+    return uniqueUser;
   }
 
   async findByEmail(email: string): Promise<User> {
-    const oneUser = await this.prisma.user.findUnique({
+    return await this.prisma.user.findUnique({
       where: {
         email,
       },
     });
-    return oneUser;
   }
 
   async update(
@@ -112,7 +105,7 @@ export class UsersService {
     id: string,
     data: UpdateUserDto,
   ): Promise<User> {
-    const updatedUser = await this.prisma.user.update({
+    return await this.prisma.user.update({
       where: {
         id,
       },
@@ -123,23 +116,13 @@ export class UsersService {
           }
         : data,
     });
-    const { avatarFileName } = updatedUser;
-    return {
-      ...updatedUser,
-      avatarFileName: `${process.env.AVATAR_USER_HOST}/${avatarFileName}`,
-      password: undefined,
-    };
   }
 
   async remove(id: string): Promise<User> {
-    const removedUser = await this.prisma.user.delete({
+    return await this.prisma.user.delete({
       where: {
         id,
       },
     });
-    return {
-      ...removedUser,
-      password: undefined,
-    };
   }
 }

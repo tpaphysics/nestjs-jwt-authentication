@@ -4,6 +4,8 @@ import { UsersController } from './users.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { MulterModule } from '@nestjs/platform-express';
 import MulterConfigService from 'src/multer/multer-config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { SetThumbnailUrlAndDeletePasswordInterceptor } from './interceptors/users.interceptor';
 
 @Module({
   exports: [UsersService],
@@ -14,6 +16,12 @@ import MulterConfigService from 'src/multer/multer-config';
     }),
   ],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [
+    UsersService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SetThumbnailUrlAndDeletePasswordInterceptor,
+    },
+  ],
 })
 export class UsersModule {}
