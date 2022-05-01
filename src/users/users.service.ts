@@ -28,7 +28,6 @@ export class UsersService {
     if (existUser) {
       throw new ConflictException('User not available!');
     }
-
     const hash = await bycrypt.hash(password, 10);
 
     if (!hash) {
@@ -87,7 +86,7 @@ export class UsersService {
       },
     });
     if (!uniqueUser) {
-      throw new BadRequestException('"User does not exist!');
+      throw new BadRequestException('User does not exist!');
     }
     return uniqueUser;
   }
@@ -119,6 +118,14 @@ export class UsersService {
   }
 
   async remove(id: string): Promise<User> {
+    const existUser = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!existUser) {
+      throw new ConflictException('User does not exist!');
+    }
     return await this.prisma.user.delete({
       where: {
         id,
