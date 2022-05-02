@@ -20,6 +20,7 @@ export class CreateUserDto extends User {
   @Matches(/[a-zA-Z0-9_-]{2,20}/)
   name: string;
 
+  @IsString()
   @MinLength(6)
   @MaxLength(20)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {

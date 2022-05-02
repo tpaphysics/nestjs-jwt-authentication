@@ -37,8 +37,12 @@ export class AuthService {
       const isPasswordValid = await bcrypt.compare(password, user.password);
 
       if (isPasswordValid) {
+        const { avatarFileName } = user;
         return {
           ...user,
+          avatarFileName: avatarFileName
+            ? `${process.env.AVATAR_USER_HOST}/${avatarFileName}`
+            : null,
           password: undefined,
         };
       }
