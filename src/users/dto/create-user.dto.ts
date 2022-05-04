@@ -10,12 +10,16 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { faker } from '@faker-js/faker';
 
 export class CreateUserDto extends User {
+  @ApiProperty({ default: faker.internet.email() })
   @IsString()
   @IsEmail()
   email: string;
 
+  @ApiProperty({ default: faker.internet.userName() })
   @IsString()
   @Matches(/[a-zA-Z0-9_-]{2,20}/)
   name: string;
@@ -26,13 +30,21 @@ export class CreateUserDto extends User {
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
     message: 'Password too weak!',
   })
+  @ApiProperty({ default: 'Password100' })
   password: string;
 
+  @ApiProperty({
+    default: faker.datatype.number({
+      min: 14,
+      max: 70,
+    }),
+  })
   @IsInt()
   @Min(1)
   @Max(120)
   age: number;
 
+  @ApiProperty({ default: 'masculine' })
   @IsString()
   @IsIn(['masculine', 'feminine'])
   gender: string;
