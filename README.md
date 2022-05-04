@@ -60,49 +60,29 @@ Para que a API funcione você deve criar alguns usuários no banco de dados. Voc
 $ yarm prisma studio
 ```
 
-Criamos um schema no arquivo <strong>schema.prisma</strong> para criação de um usuário no banco de dados:
-
-```prisma
-model User {
-  id             String   @id @default(uuid())
-  email          String   @unique
-  name           String
-  password       String
-  age            Int
-  gender         String
-  avatarFileName String?
-  createdAt      DateTime @default(now())
-  updateAt       DateTime @updatedAt
-}
-
-```
-
 ## Rotas
 
-```
-Mapped {/login, POST} route +1ms
-Mapped {/users, POST} route
-Mapped {/users, GET} route +0ms
-Mapped {/users/:id, GET} route +1ms
-Mapped {/users/:id, PATCH} route +1ms
-Mapped {/users/:id, DELETE} route +1ms
+Confira a documentação criada com Swagger, copie e cole a rota abaixo em seu navegador
+
+```url
+http://localhost:3000/api/users
 ```
 
-Todas as rotas são definidas como privadas por questões de segurança. Para definir uma rota como pública, basta usar o dacorator @IsPublicRoute():
+  <img alt="swagger" width="450px" src="./.readme/swagger.png"/>
+
+O decorator @IsPublicRoute() nos controllers , tornma uma rota pública, no caso abaixo, todas as rotas estão públicas de users.<strong>Retire o decorator @IsPublicRoute() no modo de produção</strong>
 
 ```typescript
-@Controller()
-export class AuthController {
-  constructor(private readonly authService: AuthService) {}
 
-  @IsPublicRoute()
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  @HttpCode(HttpStatus.OK)
-  async login(@Request() req: AuthRequest) {
-    return this.authService.login(req.user);
+@IsPublicRoute() //Retire o decorator @IsPublicRoute() no modo de produção
+@Controller('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+  @ApiTags('create new user')
+  @Post()
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return await this.usersService.create(createUserDto);
   }
-}
 ```
 
 Após o usuário enviar uma uma requisição do tipo post para a rota <strong>/login</strong> com body do tipo:

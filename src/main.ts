@@ -1,7 +1,8 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { generateDocs } from './swagger/swagger';
 import { UsersModule } from './users/users.module';
 
 async function bootstrap() {
@@ -16,17 +17,16 @@ async function bootstrap() {
   );
   app.enableCors({ origin: '*' }); //desability in production
 
-  const options = new DocumentBuilder()
-    .setTitle('User')
-    .setDescription('The users API description')
-    .setVersion('1.0')
-    .addTag('users')
-    .build();
-
-  const usersDocument = SwaggerModule.createDocument(app, options, {
-    include: [UsersModule],
-  });
-  SwaggerModule.setup('api/users', app, usersDocument);
+  generateDocs(
+    new DocumentBuilder()
+      .setTitle('User')
+      .setDescription('The users API description')
+      .setVersion('1.0')
+      .build(),
+    'users',
+    app,
+    UsersModule,
+  );
 
   await app.listen(3000);
 }
