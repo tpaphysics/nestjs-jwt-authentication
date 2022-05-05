@@ -10,12 +10,11 @@ import { AuthService } from './auth.service';
 import { AuthRequest } from './models/AuthRequest';
 import { LocalAuthGuard } from './gards/local-auth.guard';
 import { IsPublicRoute } from './decorators/is-public-route.decorator';
-
+@IsPublicRoute()
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @IsPublicRoute()
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)

@@ -20,6 +20,7 @@ async function bootstrap() {
   generateDocs(
     new DocumentBuilder()
       .setTitle('User')
+      //  .addApiKey({ type: 'apiKey', name: 'authorization', in: 'header' })
       .setDescription('The users API description')
       .setVersion('1.0')
       .build(),
