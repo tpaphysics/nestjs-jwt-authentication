@@ -8,7 +8,7 @@ export function generateDocs(
   module: any,
 ) {
   const Document = SwaggerModule.createDocument(app, options, {
-    include: [module],
+    include: [...module],
   });
   SwaggerModule.setup(`api/${route}`, app, Document);
 }

@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { AuthModule } from './auth/auth.module';
 import { generateDocs } from './swagger/swagger';
 import { UsersModule } from './users/users.module';
 
@@ -19,14 +20,25 @@ async function bootstrap() {
 
   generateDocs(
     new DocumentBuilder()
+      .setTitle('Authenticate')
+      .setDescription('The users token provider')
+      .setVersion('1.0')
+      .build(),
+    'login',
+    app,
+    [AuthModule],
+  );
+
+  generateDocs(
+    new DocumentBuilder()
       .setTitle('User')
-      //  .addApiKey({ type: 'apiKey', name: 'authorization', in: 'header' })
       .setDescription('The users API description')
       .setVersion('1.0')
+      .addBearerAuth()
       .build(),
     'users',
     app,
-    UsersModule,
+    [UsersModule],
   );
 
   await app.listen(3000);

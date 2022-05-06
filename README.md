@@ -29,8 +29,11 @@ Nessa postagem criamos uma API Rest com CRUD de usários juntamente com fluxo de
 # Instalação das dependências
 $ yarn
 
-# Iniciar container com banco de dados postgress (Você precisa ter o docker instalado!):
+# Iniciar container com banco de dados postgres (Você precisa ter o docker instalado!):
 $ yarn up:db
+
+# Para remover o container com o banco de dados postgres
+$ yarn rm:db
 
 # Migração dos models definidos no schema.prisma para o banco de dados
 $ yarn prisma migrate dev
@@ -51,24 +54,20 @@ $ yarn start:prod
 
 ## Observação
 
-```bash
-# Para remover o container criado:
-$ yarn rm:db
-```
-
-Para que a API funcione você deve criar alguns usuários no banco de dados. Você pode usar algum cliente http como postman, insomnia, ou usar o prisma studio:
+Para que a API funcione você deve criar alguns usuários no banco de dados. Você pode usar o prisma studio:
 
 ```bash
 $ yarm prisma studio
 ```
 
-Após o usuário enviar uma uma requisição do tipo post para a rota <strong>/login</strong> com body do tipo:
+## Autenticação:
 
-```json
-{
-  "email": "teste@teste.com",
-  "password": "1Teste"
-}
+```bash
+# Usuário e senhas do novo usuário criado acima, exemplo:
+$ curl -X 'POST'   'http://localhost:3000/login'   -H 'accept: */*'   -H 'Content-Type: application/json'   -d '{
+  "email": "Johan_Abernathy19@yahoo.com",
+  "password": "Password100"
+}'
 ```
 
 Recebemos como resposta:

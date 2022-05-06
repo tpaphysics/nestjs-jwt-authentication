@@ -7,7 +7,7 @@ export class LoginRequestBody {
   @IsEmail()
   email: string;
 
-  @ApiProperty({ default: faker.internet.password })
+  @ApiProperty({ default: '1Teste' })
   @IsString()
   password: string;
 }

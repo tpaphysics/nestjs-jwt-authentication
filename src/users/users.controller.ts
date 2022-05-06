@@ -17,40 +17,68 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { findAllUserDto } from './dto/findAll-user.dto';
 import { IsPublicRoute } from 'src/auth/decorators/is-public-route.decorator';
 import { User } from './entities/user.entity';
-import { FindAllUserResponse } from './interfaces/user.interfaces';
 
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { updateUserWithThumbnailDto } from './dto/upload-image-user.dto';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import FindAllUserResponse from './entities/find-all-users-response.entity';
 
-@IsPublicRoute()
 @Controller('users')
+@ApiTags('CRUD')
+@ApiBearerAuth()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-  @ApiTags('create new user')
+  @ApiOperation({ summary: 'Create user' })
+  @ApiResponse({
+    status: 200,
+    description: 'The found record',
+    type: User,
+  })
+  @IsPublicRoute()
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.usersService.create(createUserDto);
   }
 
-  @ApiTags('find users paginate')
+  @ApiOperation({ summary: 'Find users' })
+  @ApiResponse({
+    status: 200,
+    description: 'The found users',
+    type: FindAllUserResponse,
+  })
   @Get()
   async findAll(@Query() query: findAllUserDto): Promise<FindAllUserResponse> {
     return await this.usersService.findAll(query);
   }
 
-  @ApiTags('find user')
+  @ApiOperation({ summary: 'Find user' })
   @Get(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'The found user',
+    type: FindAllUserResponse,
+  })
   async findOne(@Param('id') id: string): Promise<User> {
     return this.usersService.findOne(id);
   }
 
-  @ApiTags('update user')
   @Patch(':id')
   @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Update user' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'ThubnailUser',
-    type: updateUserWithThumbnailDto,
+    type: User,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Update user',
+    type: User,
   })
   async update(
     @UploadedFile() file: Express.Multer.File,
@@ -60,8 +88,13 @@ export class UsersController {
     return await this.usersService.update(file, id, updateUserDto);
   }
 
-  @ApiTags('delete user')
+  @ApiOperation({ summary: 'Delete user' })
   @Delete(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'Update users',
+    type: User,
+  })
   async remove(@Param('id') id: string): Promise<User> {
     return this.usersService.remove(id);
   }

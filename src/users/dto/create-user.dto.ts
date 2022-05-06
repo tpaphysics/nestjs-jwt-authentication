@@ -13,7 +13,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { faker } from '@faker-js/faker';
 
-export class CreateUserDto extends User {
+export class CreateUserDto {
   @ApiProperty({ default: faker.internet.email() })
   @IsString()
   @IsEmail()

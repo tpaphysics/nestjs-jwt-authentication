@@ -9,8 +9,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { findAllUserDto } from './dto/findAll-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { FindAllUserResponse } from './interfaces/user.interfaces';
 import * as bycrypt from 'bcrypt';
+import FindAllUserResponse from './entities/find-all-users-response.entity';
 
 @Injectable()
 export class UsersService {
