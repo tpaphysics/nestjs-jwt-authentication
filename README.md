@@ -247,8 +247,12 @@ async findAll(query: findAllUserDto): Promise<FindAllUserResponse> {
   }
 ```
 
+<p>
 <strong>skip</strong>: Número de resultados a serem ignordos
+</p>
+<p>
 <strong>take</strong>: Número de resultados retornados após o skip
+</p>
 
 De maneira intuitiva, temos:
 
