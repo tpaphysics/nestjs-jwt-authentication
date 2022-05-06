@@ -135,6 +135,7 @@ Após efetuar login copie o access_token gerado:
 ```
 
 Cole no campo Authorize:
+
 <image width="360px" src="./.readme/authorize.example.png"/>
 
 ## Upload de imagens com o multer
