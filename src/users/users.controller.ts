@@ -33,31 +33,32 @@ import FindAllUserResponse from './entities/find-all-users-response.entity';
 @ApiBearerAuth()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @IsPublicRoute()
+  @Post()
   @ApiOperation({ summary: 'Create user' })
   @ApiResponse({
     status: 200,
     description: 'The found record',
     type: User,
   })
-  @IsPublicRoute()
-  @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.usersService.create(createUserDto);
   }
 
+  @Get()
   @ApiOperation({ summary: 'Find users' })
   @ApiResponse({
     status: 200,
     description: 'The found users',
     type: FindAllUserResponse,
   })
-  @Get()
   async findAll(@Query() query: findAllUserDto): Promise<FindAllUserResponse> {
     return await this.usersService.findAll(query);
   }
 
-  @ApiOperation({ summary: 'Find user' })
   @Get(':id')
+  @ApiOperation({ summary: 'Find user' })
   @ApiResponse({
     status: 200,
     description: 'The found user',
@@ -88,8 +89,8 @@ export class UsersController {
     return await this.usersService.update(file, id, updateUserDto);
   }
 
-  @ApiOperation({ summary: 'Delete user' })
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete user' })
   @ApiResponse({
     status: 200,
     description: 'Update users',

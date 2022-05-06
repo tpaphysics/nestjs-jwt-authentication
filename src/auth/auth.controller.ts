@@ -22,12 +22,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @ApiBody({ type: () => LoginRequestBody })
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({
     status: 200,
     description: 'Provider token for api',
     type: UserToken,
   })
-  @HttpCode(HttpStatus.OK)
   async login(@Request() req: AuthRequest): Promise<any> {
     return await this.authService.login(req.user);
   }

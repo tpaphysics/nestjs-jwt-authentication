@@ -19,12 +19,14 @@
   
 <img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white" alt="Prisma" />
   
-##  Descrição
+##   Descrição
+  
   
   
 Nessa postagem criamos uma API Rest com CRUD de usários juntamente com fluxo de autenticação JWT utilizando o framework [Nest](https://nestjs.com/ ). Desta forma podemos criar, deletar, pesquisar e atualizar uma tabela de usuários no banco de dados. Usamos também o [Prisma](https://www.prisma.io/ ) como ORM e criamos um container com o banco de dados postgres usando o [Docker Compose](https://docs.docker.com/compose/ ).
   
-##  Instalação
+##   Instalação
+  
   
   
 ```bash
@@ -38,7 +40,8 @@ $ yarn up:db
 $ yarn prisma migrate dev
 ```
   
-##  Iniciando o servidor
+##   Iniciando o servidor
+  
   
   
 ```bash
@@ -56,23 +59,24 @@ Para remover o container com o postgres:
 $ yarn rm:db
 ```
   
-##  Observação
+##   Observação
+  
   
 Somente as rotas /login e de criação de usuário /users são públicas. Para tornar todas as rotas públicas basta colocar o decorator <strong>@IsPublicRoute()</strong> no UsersController como no exemplo abaixo:
-
+  
 ```typescript
 @IsPublicRoute() #aqui
-
+  
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   ... ... ... ...
   ... ... ... ...
 ```
-
+  
 Agora você deve criar pelo menos um usuário no banco de dados. Você pode usar algum cliente http como curl, postman, insomnia, swagger ou usar o prisma studio.
-
+  
 Usando o curl:
-
+  
 ```bash
 curl -X 'POST' \
   'http://localhost:3000/users' \
@@ -86,17 +90,18 @@ curl -X 'POST' \
   "gender": "masculine"
 }'
 ```
-
+  
 Usando o prisma studio:
-
+  
 ```bash
 $ yarm prisma studio
 ```
-
-## Login
-
+  
+##  Login
+  
+  
 Usando o curl:
-
+  
 ```bash
 curl -X 'POST' \
   'http://localhost:3000/login' \
@@ -107,17 +112,17 @@ curl -X 'POST' \
   "password": "Password1",
 }'
 ```
-
+  
 Usando o swagger:
-
+  
 ```url
 http://localhost:3000/api/login
 ```
-
+  
 <image width="360px" src="./.readme/login-swagger.png"/>
-
+  
 Após efetuar login copie o access_token gerado:
-
+  
 ```json
 {
   "user": {
@@ -133,26 +138,27 @@ Após efetuar login copie o access_token gerado:
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZmNiZTI4NS03Y2QzLTQxZjItOGQ4YS1kNWFhMDA3MWE3MDQiLCJlbWFpbCI6InRlc3RlQHRlc3RlLmNvbSIsIm5hbWUiOiJ0ZXN0ZSIsImlhdCI6MTY1MTAwOTYzMywiZXhwIjoxNjUzNjAxNjMzfQ.9D_7gjQ96aRYYahZVZQqQLgEpD699YOkhKozy6EYgsA"
 }
 ```
-
+  
 Cole no campo Authorize:
 <image width="360px" src="./.readme/authorize.example.png"/>
-
-## Upload de imagens com o multer
-
-No médodo <strong>update</strong> conseguimos fazer uploads de imagens para pasta <strong>upload</strong> no diretório corrente do projeto. O multer foi configurado no arquivo <strong>multer-config.ts</strong>. Para entender a integração do multer com NestJs basta ler a [documentação](https://docs.nestjs.com/techniques/file-upload). Abaixo configuramos o multer para filtar arquivos de imagens com extensões jpeg, jpg e png com tamanho máximo defindo no arquivo .env na variável AVATAR_SIZE_FILE.
-
+  
+##  Upload de imagens com o multer
+  
+  
+No médodo <strong>update</strong> conseguimos fazer uploads de imagens para pasta <strong>upload</strong> no diretório corrente do projeto. O multer foi configurado no arquivo <strong>multer-config.ts</strong>. Para entender a integração do multer com NestJs basta ler a [documentação](https://docs.nestjs.com/techniques/file-upload ). Abaixo configuramos o multer para filtar arquivos de imagens com extensões jpeg, jpg e png com tamanho máximo defindo no arquivo .env na variável AVATAR_SIZE_FILE.
+  
 ```typescript
 // multer-config.js
-
+  
 import { Injectable, UnsupportedMediaTypeException } from '@nestjs/common';
 import { randomBytes } from 'crypto';
-
+  
 import {
   MulterModuleOptions,
   MulterOptionsFactory,
 } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-
+  
 @Injectable()
 export default class MulterConfigService implements MulterOptionsFactory {
   createMulterOptions(): MulterModuleOptions {
@@ -188,35 +194,36 @@ export default class MulterConfigService implements MulterOptionsFactory {
   }
 }
 ```
-
-## Paginação usando o Prisma
-
+  
+##  Paginação usando o Prisma
+  
+  
 Implementamos um sistema de paginação do tipo offset utilizando o Prisma no arquivo <strong>user.service.ts</strong>
-
+  
 ```typescript
 // user.service.ts
-
+  
 async findAll(query: findAllUserDto): Promise<FindAllUserResponse> {
     const { page, take } = query;
-
+  
     const totalUsers = await this.prisma.user.count();
-
+  
     if (!totalUsers || totalUsers == 0) {
       throw new InternalServerErrorException('Not found users!');
     }
-
+  
     if (take > totalUsers) {
       throw new BadRequestException('Invalid number of users!');
     }
-
+  
     const totalPages = Math.ceil(totalUsers / take);
-
+  
     if (page > totalPages) {
       throw new BadRequestException(
         `Maximum number of pages are ${totalPages}!`,
       );
     }
-
+  
     const users = await this.prisma.user.findMany({
       skip: (page - 1) * take,
       take,
@@ -235,7 +242,7 @@ async findAll(query: findAllUserDto): Promise<FindAllUserResponse> {
         updateAt: true,
       },
     });
-
+  
     return {
       paginate: {
         page: page,
@@ -245,40 +252,48 @@ async findAll(query: findAllUserDto): Promise<FindAllUserResponse> {
     };
   }
 ```
-
+  
 <strong>skip</strong>: Número de resultados a serem ignordos
+<br/>
 <strong>take</strong>: Número de resultados retornados após o skip
-
+  
 De maneira intuitiva, temos:
-
+  
 ```
 page > 0
 skip=(page-1)take
 ```
-
+  
+Enviamos esses parâmatros para o backend através dos query params em uma requisição do tipo get.
+  
+```url
+http://localhost:3000/users?page=1&take=2
+```
+  
 E eles são validados no findAll-user.dto.ts como sendo do tipo númerico, inteiro e maior que 0
-
+  
 ```typescript
 import { Type } from 'class-transformer';
 import { IsInt, Min } from 'class-validator';
 import { User } from '../entities/user.entity';
-
+  
 export class findAllUserDto extends User {
   @Type(() => Number)
   @IsInt()
   @Min(1)
   page: number;
-
+  
   @Type(() => Number)
   @IsInt()
   @Min(1)
   take: number;
 ```
-
-## **💥 Considerações**
-
-Existem muita vatagens na utilização do NestJs para criação de APIs uma delas é o fato dele respeitar os principios do <strong>SOLID</strong>. Desta forma forma fica mais facil a escalabilidade do projeto e o trabalho em grupo com uma aquitetura padrão definida. O NestJs usa uma aquitetura muito semelhante a do framework [Angular](https://angular.io/), com uso de decorators. Particularmente achei bem interessante a abordagem da biblioteca [class-validator](https://www.npmjs.com/package/class-validator) para validação de campos através de decorators nos Data Transfer Objects (DTOs) :
-
+  
+##  **💥 Considerações**
+  
+  
+Existem muita vatagens na utilização do NestJs para criação de APIs uma delas é o fato dele respeitar os principios do <strong>SOLID</strong>. Desta forma forma fica mais facil a escalabilidade do projeto e o trabalho em grupo com uma aquitetura padrão definida. O NestJs usa uma aquitetura muito semelhante a do framework [Angular](https://angular.io/ ), com uso de decorators. Particularmente achei bem interessante a abordagem da biblioteca [class-validator](https://www.npmjs.com/package/class-validator ) para validação de campos através de decorators nos Data Transfer Objects (DTOs) :
+  
 ```typescript
 import { User } from '../entities/user.entity';
 import {
@@ -292,38 +307,39 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
-
+  
 export class CreateUserDto extends User {
   @IsString()
   @IsEmail()
   email: string;
-
+  
   @IsString()
   @Matches(/[a-zA-Z0-9_-]{2,20}/)
   name: string;
-
+  
   @MinLength(6)
   @MaxLength(20)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
     message: 'Password too weak!',
   })
   password: string;
-
+  
   @IsInt()
   @Min(1)
   @Max(120)
   age: number;
-
+  
   @IsString()
   @IsIn(['masculine', 'feminine'])
   gender: string;
 }
 ```
-
-Outro fator interressante é o tratamento de erros de forma global através da utilização de middlewares. Existem inumeras outras vantagens na utilização NestJs. Para mais informações, consulte a [documentação](https://nestjs.com/).
-
-## **👨‍🚀 Autor**
-
+  
+Outro fator interressante é o tratamento de erros de forma global através da utilização de middlewares. Existem inumeras outras vantagens na utilização NestJs.Para mais informações, consulte a documentação do [NestJs](https://nestjs.com/ ).
+  
+##  **👨‍🚀 Autor**
+  
+  
 <a href="https://github.com/tpaphysics">
 <img alt="Thiago Pacheco" src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/46402647?v=4?v=4&h=300&w=300&fit=cover&mask=circle&maxage=7d" width="100px"/>
   <br />
@@ -338,7 +354,9 @@ Outro fator interressante é o tratamento de erros de forma global através da u
 [![Linkedin Badge](https://img.shields.io/badge/-LinkedIn-blue?style=for-the-badge&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/thiago-pacheco-200a1a86/ )](https://www.linkedin.com/in/thiago-pacheco-200a1a86/)
 [![Gmail Badge](https://img.shields.io/badge/-Gmail-c14438?style=for-the-badge&logo=Gmail&logoColor=white&link=mailto:physics.posgrad.@gmail.com )](mailto:physics.posgrad.@gmail.com)
   
-##  Licença
+##   Licença
+  
   
   
 Veja o arquivo [MIT license](LICENSE ).
+  
