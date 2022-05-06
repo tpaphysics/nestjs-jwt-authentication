@@ -1,118 +1,141 @@
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
-
+  
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
-
+  
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
 <img src="https://img.shields.io/badge/yarn-%232C8EBB.svg?style=for-the-badge&logo=yarn&logoColor=white" alt="yarn" />
-
+  
 <img src="https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJs" />
-
+  
 <img src="https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white" alt="Prisma.io" />
-
+  
 <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
-
+  
 <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="Prisma" />
-
+  
 <img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white" alt="Prisma" />
-
-## Descrição
-
-Nessa postagem criamos uma API Rest com CRUD de usários juntamente com fluxo de autenticação JWT utilizando o framework [Nest](https://nestjs.com/). Desta forma podemos criar, deletar, pesquisar e atualizar uma tabela de usuários no banco de dados. Usamos também o [Prisma](https://www.prisma.io/) como ORM e criamos um container com o banco de dados postgres usando o [Docker Compose](https://docs.docker.com/compose/).
-
-## Instalação
-
+  
+##  Descrição
+  
+  
+Nessa postagem criamos uma API Rest com CRUD de usários juntamente com fluxo de autenticação JWT utilizando o framework [Nest](https://nestjs.com/ ). Desta forma podemos criar, deletar, pesquisar e atualizar uma tabela de usuários no banco de dados. Usamos também o [Prisma](https://www.prisma.io/ ) como ORM e criamos um container com o banco de dados postgres usando o [Docker Compose](https://docs.docker.com/compose/ ).
+  
+##  Instalação
+  
+  
 ```bash
 # Instalação das dependências
 $ yarn
-
-# Iniciar container com banco de dados postgres (Você precisa ter o docker instalado!):
+  
+# Iniciar container com banco de dados postgress (Você precisa ter o docker instalado!):
 $ yarn up:db
-
-# Para remover o container com o banco de dados postgres
-$ yarn rm:db
-
+  
 # Migração dos models definidos no schema.prisma para o banco de dados
 $ yarn prisma migrate dev
 ```
-
-## Iniciando o servidor
-
+  
+##  Iniciando o servidor
+  
+  
 ```bash
 # development
 $ yarn start
-
+  
 # watch mode
 $ yarn start:dev
-
+  
 # production mode
 $ yarn start:prod
 ```
+Para remover o container com o postgres:
+```bash
+$ yarn rm:db
+```
+  
+##  Observação
+  
+Somente as rotas /login e de criação de usuário /users são públicas. Para tornar todas as rotas públicas basta colocar o decorator <strong>@IsPublicRoute()</strong> no UsersController como no exemplo abaixo:
 
-## Observação
+```typescript
+@IsPublicRoute() #aqui
 
-Para que a API funcione você deve criar alguns usuários no banco de dados. Você pode usar o prisma studio:
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+  ... ... ... ...
+  ... ... ... ...
+```
+
+Agora você deve criar pelo menos um usuário no banco de dados. Você pode usar algum cliente http como curl, postman, insomnia, swagger ou usar o prisma studio.
+
+Usando o curl:
+
+```bash
+curl -X 'POST' \
+  'http://localhost:3000/users' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "email": "user@gmail.com",
+  "name": "UserName1",
+  "password": "Password1",
+  "age": 28,
+  "gender": "masculine"
+}'
+```
+
+Usando o prisma studio:
 
 ```bash
 $ yarm prisma studio
 ```
 
-## Autenticação:
+## Login
+
+Usando o curl:
 
 ```bash
-# Usuário e senhas do novo usuário criado acima, exemplo:
-$ curl -X 'POST'   'http://localhost:3000/login'   -H 'accept: */*'   -H 'Content-Type: application/json'   -d '{
-  "email": "Johan_Abernathy19@yahoo.com",
-  "password": "Password100"
+curl -X 'POST' \
+  'http://localhost:3000/login' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "email": "user@gmail.com",
+  "password": "Password1",
 }'
 ```
 
-Recebemos como resposta:
+Usando o swagger:
+
+```url
+http://localhost:3000/api/login
+```
+
+<image width="360px" src="./.readme/login-swagger.png"/>
+
+Após efetuar login copie o access_token gerado:
 
 ```json
 {
   "user": {
-    "id": "8fcbe285-7cd3-41f2-8d8a-d5aa0071a704",
-    "email": "teste@teste.com",
-    "name": "teste",
-    "age": 32,
+    "id": "0a177967-4161-4ad8-8c6d-02b8b22deaee",
+    "email": "Carlos_Fadel@gmail.com",
+    "name": "Harvey.Upton",
+    "age": 50,
     "gender": "masculine",
-    "avatarFileName": null,
-    "createdAt": "2022-04-26T21:46:48.318Z",
-    "updateAt": "2022-04-26T21:46:48.318Z"
+    "avatarFileName": "http://gentle-consul.com",
+    "createdAt": 1651823528429,
+    "updateAt": 1651823528429
   },
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZmNiZTI4NS03Y2QzLTQxZjItOGQ4YS1kNWFhMDA3MWE3MDQiLCJlbWFpbCI6InRlc3RlQHRlc3RlLmNvbSIsIm5hbWUiOiJ0ZXN0ZSIsImlhdCI6MTY1MTAwOTYzMywiZXhwIjoxNjUzNjAxNjMzfQ.9D_7gjQ96aRYYahZVZQqQLgEpD699YOkhKozy6EYgsA"
 }
 ```
 
-## Rotas
-
-Confira a documentação criada com Swagger, copie e cole a rota abaixo em seu navegador
-
-```url
-http://localhost:3000/api/users
-```
-
-  <img alt="swagger" width="450px" src="./.readme/swagger.png"/>
-
-O decorator @IsPublicRoute(), torna as rotas do users.controllers públicas.<strong> Retire o decorator @IsPublicRoute() no modo de produção:</strong>
-
-```typescript
-
-
-@IsPublicRoute() //Retire o decorator @IsPublicRoute() no modo de produção
-@Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
-  @ApiTags('create new user')
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return await this.usersService.create(createUserDto);
-  }
-```
+Cole no campo Authorize:
+<image width="360px" src="./.readme/authorize.example.png"/>
 
 ## Upload de imagens com o multer
 
@@ -224,7 +247,6 @@ async findAll(query: findAllUserDto): Promise<FindAllUserResponse> {
 ```
 
 <strong>skip</strong>: Número de resultados a serem ignordos
-<br/>
 <strong>take</strong>: Número de resultados retornados após o skip
 
 De maneira intuitiva, temos:
@@ -232,12 +254,6 @@ De maneira intuitiva, temos:
 ```
 page > 0
 skip=(page-1)take
-```
-
-Enviamos esses parâmatros para o backend através dos query params em uma requisição do tipo get.
-
-```url
-http://localhost:3000/users?page=1&take=2
 ```
 
 E eles são validados no findAll-user.dto.ts como sendo do tipo númerico, inteiro e maior que 0
@@ -261,7 +277,7 @@ export class findAllUserDto extends User {
 
 ## **💥 Considerações**
 
-Existem muita vatagens na utilização do NestJs para criação de APIs uma delas é o fato dele respeitar os principios do <strong>SOLID</strong>. Desta forma forma fica mais facil o trabalho em grupo com uma aquitetura padrão definida. O NestJs usa uma aquitetura muito semelhante a do framework [Angular](https://angular.io/), com uso de classes extendidas e decorators. Particularmente achei bem elegante o uso da biblioteca [class-validator](https://www.npmjs.com/package/class-validator) para validação de campos através de decorators nos Data Transfer Objects (DTOs) :
+Existem muita vatagens na utilização do NestJs para criação de APIs uma delas é o fato dele respeitar os principios do <strong>SOLID</strong>. Desta forma forma fica mais facil a escalabilidade do projeto e o trabalho em grupo com uma aquitetura padrão definida. O NestJs usa uma aquitetura muito semelhante a do framework [Angular](https://angular.io/), com uso de decorators. Particularmente achei bem interessante a abordagem da biblioteca [class-validator](https://www.npmjs.com/package/class-validator) para validação de campos através de decorators nos Data Transfer Objects (DTOs) :
 
 ```typescript
 import { User } from '../entities/user.entity';
@@ -304,7 +320,7 @@ export class CreateUserDto extends User {
 }
 ```
 
-Isso contribiu para um código _clean_ e escalável. Outro fator interressante é o tratamento de erros de forma global através da utilização de middlewares. Existem inumeras outras vantagens na utilização NestJs, ele pode ser usados para a criação de microserviços,serveless, etc... Para mais informações, consulte a documentação do [NestJs](https://nestjs.com/).
+Outro fator interressante é o tratamento de erros de forma global através da utilização de middlewares. Existem inumeras outras vantagens na utilização NestJs. Para mais informações, consulte a [documentação](https://nestjs.com/).
 
 ## **👨‍🚀 Autor**
 
@@ -316,12 +332,13 @@ Isso contribiu para um código _clean_ e escalável. Outro fator interressante �
   </sub>
 </a>
 <br />
-
+  
 👋 Meus contatos!
-
-[![Linkedin Badge](https://img.shields.io/badge/-LinkedIn-blue?style=for-the-badge&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/thiago-pacheco-200a1a86/)](https://www.linkedin.com/in/thiago-pacheco-200a1a86/)
-[![Gmail Badge](https://img.shields.io/badge/-Gmail-c14438?style=for-the-badge&logo=Gmail&logoColor=white&link=mailto:physics.posgrad.@gmail.com)](mailto:physics.posgrad.@gmail.com)
-
-## Licença
-
-Veja o arquivo [MIT license](LICENSE).
+  
+[![Linkedin Badge](https://img.shields.io/badge/-LinkedIn-blue?style=for-the-badge&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/thiago-pacheco-200a1a86/ )](https://www.linkedin.com/in/thiago-pacheco-200a1a86/)
+[![Gmail Badge](https://img.shields.io/badge/-Gmail-c14438?style=for-the-badge&logo=Gmail&logoColor=white&link=mailto:physics.posgrad.@gmail.com )](mailto:physics.posgrad.@gmail.com)
+  
+##  Licença
+  
+  
+Veja o arquivo [MIT license](LICENSE ).
