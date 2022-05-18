@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 import { UpdateUserDto } from './update-user.dto';
 
-export class updateUserWithThumbnailDto extends UpdateUserDto {
+export class UpdateUserWithThumbnailDto extends UpdateUserDto {
   @IsOptional()
   name?: string;
   @IsOptional()

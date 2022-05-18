@@ -27,10 +27,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import FindAllUserResponse from './entities/find-all-users-response.entity';
+import { UpdateUserWithThumbnailDto } from './dto/upload-image-user.dto';
 
 @Controller('users')
 @ApiTags('CRUD')
 @ApiBearerAuth()
+@IsPublicRoute()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -74,7 +76,7 @@ export class UsersController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'ThubnailUser',
-    type: User,
+    type: UpdateUserWithThumbnailDto,
   })
   @ApiResponse({
     status: 200,

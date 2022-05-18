@@ -14,23 +14,23 @@ import { ApiProperty } from '@nestjs/swagger';
 import { faker } from '@faker-js/faker';
 
 export class CreateUserDto {
-  @ApiProperty({ default: faker.internet.email() })
+  @ApiProperty({ default: faker.internet.email().toLocaleLowerCase() })
   @IsString()
-  @IsEmail()
+  //@IsEmail()
   email: string;
 
-  @ApiProperty({ default: faker.internet.userName() })
+  @ApiProperty({ default: faker.internet.userName().toLocaleLowerCase() })
   @IsString()
-  @Matches(/[a-zA-Z0-9_-]{2,20}/)
+  //@Matches(/[a-zA-Z0-9_-]{2,20}/)
   name: string;
 
   @IsString()
-  @MinLength(6)
-  @MaxLength(20)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'Password too weak!',
-  })
-  @ApiProperty({ default: 'Password100' })
+  //@MinLength(6)
+  //@MaxLength(20)
+  //@Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+  // message: 'Password too weak!',
+  //})
+  @ApiProperty({ default: 'password' })
   password: string;
 
   @ApiProperty({
@@ -40,12 +40,12 @@ export class CreateUserDto {
     }),
   })
   @IsInt()
-  @Min(1)
-  @Max(120)
+  //@Min(1)
+  //@Max(120)
   age: number;
 
   @ApiProperty({ default: 'masculine' })
   @IsString()
-  @IsIn(['masculine', 'feminine'])
+  //@IsIn(['masculine', 'feminine'])
   gender: string;
 }
