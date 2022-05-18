@@ -32,20 +32,4 @@ export class CreateUserDto {
   //})
   @ApiProperty({ default: 'password' })
   password: string;
-
-  @ApiProperty({
-    default: faker.datatype.number({
-      min: 14,
-      max: 70,
-    }),
-  })
-  @IsInt()
-  //@Min(1)
-  //@Max(120)
-  age: number;
-
-  @ApiProperty({ default: 'masculine' })
-  @IsString()
-  //@IsIn(['masculine', 'feminine'])
-  gender: string;
 }

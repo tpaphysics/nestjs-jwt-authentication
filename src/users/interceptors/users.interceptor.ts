@@ -16,10 +16,10 @@ export class SetThumbnailUrlAndDeletePasswordInterceptor
         const { users } = data;
         if (users) {
           users.map((user) => {
-            const { avatarFileName } = user;
+            const { avatar } = user;
             user.password = undefined;
-            user.avatarFileName = avatarFileName
-              ? `${process.env.AVATAR_USER_HOST}/${avatarFileName}`
+            user.avatar = avatar
+              ? `${process.env.AVATAR_USER_HOST}/${avatar}`
               : null;
           });
         }
@@ -27,9 +27,9 @@ export class SetThumbnailUrlAndDeletePasswordInterceptor
         if (password) {
           data.password = undefined;
         }
-        const { avatarFileName } = data;
-        if (avatarFileName) {
-          data.avatarFileName = `${process.env.AVATAR_USER_HOST}/${avatarFileName}`;
+        const { avatar } = data;
+        if (avatar) {
+          data.avatar = `${process.env.AVATAR_USER_HOST}/${avatar}`;
         }
         return data;
       }),

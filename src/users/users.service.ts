@@ -111,7 +111,7 @@ export class UsersService {
       data: file
         ? {
             ...data,
-            avatarFileName: file.filename,
+            avatar: file.filename,
           }
         : data,
     });
