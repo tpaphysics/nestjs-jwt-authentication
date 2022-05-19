@@ -8,6 +8,7 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/gards/jwt-auth.guard';
+import { AppointmentsModule } from './appointments/appointments.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { JwtAuthGuard } from './auth/gards/jwt-auth.guard';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'upload'),
     }),
+    AppointmentsModule,
   ],
   providers: [
     PrismaService,
