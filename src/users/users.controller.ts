@@ -50,22 +50,17 @@ export class UsersController {
 
   @Get()
   @ApiOperation({ summary: 'Find users' })
-  @ApiResponse({
-    status: 200,
-    description: 'The found users',
-    type: FindAllUserResponse,
-  })
+  //@ApiResponse({
+  //  status: 200,
+  //  description: 'The found users',
+  //  type: FindAllUserResponse,
+  //})
   async findAll(@Query() query: findAllUserDto): Promise<FindAllUserResponse> {
     return await this.usersService.findAll(query);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Find user' })
-  @ApiResponse({
-    status: 200,
-    description: 'The found user',
-    type: FindAllUserResponse,
-  })
   async findOne(@Param('id') id: string): Promise<User> {
     return this.usersService.findOne(id);
   }
@@ -78,11 +73,6 @@ export class UsersController {
     description: 'ThubnailUser',
     type: UpdateUserWithThumbnailDto,
   })
-  @ApiResponse({
-    status: 200,
-    description: 'Update user',
-    type: User,
-  })
   async update(
     @UploadedFile() file: Express.Multer.File,
     @Param('id') id: string,
@@ -93,11 +83,6 @@ export class UsersController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete user' })
-  @ApiResponse({
-    status: 200,
-    description: 'Update users',
-    type: User,
-  })
   async remove(@Param('id') id: string): Promise<User> {
     return this.usersService.remove(id);
   }

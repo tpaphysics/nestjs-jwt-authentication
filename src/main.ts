@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { AppointmentsModule } from './appointments/appointments.module';
 import { AuthModule } from './auth/auth.module';
 import { generateDocs } from './swagger/swagger';
 import { UsersModule } from './users/users.module';
@@ -39,6 +40,18 @@ async function bootstrap() {
     'users',
     app,
     [UsersModule],
+  );
+
+  generateDocs(
+    new DocumentBuilder()
+      .setTitle('Appointments')
+      .setDescription('The appointments API description')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build(),
+    'appointments',
+    app,
+    [AppointmentsModule],
   );
 
   await app.listen(3000);

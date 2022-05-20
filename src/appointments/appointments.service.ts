@@ -1,26 +1,43 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 
 @Injectable()
 export class AppointmentsService {
-  create(createAppointmentDto: CreateAppointmentDto) {
-    return 'This action adds a new appointment';
+  constructor(private readonly prisma: PrismaService) {}
+  async create(data: CreateAppointmentDto) {
+    return await this.prisma.appointments.create({
+      data,
+    });
   }
 
-  findAll() {
-    return `This action returns all appointments`;
+  async findAll() {
+    return await this.prisma.appointments.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} appointment`;
+  async findOne(id: string) {
+    return await this.prisma.appointments.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: number, updateAppointmentDto: UpdateAppointmentDto) {
-    return `This action updates a #${id} appointment`;
+  async update(id: string, data: UpdateAppointmentDto) {
+    return await this.prisma.appointments.update({
+      where: {
+        id,
+      },
+      data,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} appointment`;
+  async remove(id: string) {
+    return await this.prisma.appointments.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

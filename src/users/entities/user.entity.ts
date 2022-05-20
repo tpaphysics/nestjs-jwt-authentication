@@ -11,8 +11,8 @@ export class User {
   password: string;
   @ApiProperty({ default: faker.internet.url() })
   avatar?: string;
-  @ApiProperty({ default: Date.now() })
+  @ApiProperty({ default: faker.datatype.datetime() })
   createdAt?: string | Date;
-  @ApiProperty({ default: Date.now() })
+  @ApiProperty({ default: faker.datatype.datetime() })
   updateAt?: string | Date;
 }
