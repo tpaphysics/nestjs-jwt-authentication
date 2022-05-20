@@ -68,6 +68,14 @@ export class UsersService {
       orderBy: {
         createdAt: 'asc',
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
+        createdAt: true,
+        updateAt: true,
+      },
     });
 
     return {

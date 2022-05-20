@@ -9,9 +9,11 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IsPublicRoute } from 'src/auth/decorators/is-public-route.decorator';
+import { moveMessagePortToContext } from 'worker_threads';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import { Appointment } from './entities/appointment.entity';
 
 @Controller('appointments')
 @ApiTags('CRUD')
@@ -23,8 +25,10 @@ export class AppointmentsController {
 
   @Post()
   @ApiOperation({ summary: 'Create appointement' })
-  create(@Body() createAppointmentDto: CreateAppointmentDto) {
-    return this.appointmentsService.create(createAppointmentDto);
+  async create(
+    @Body() createAppointmentDto: CreateAppointmentDto,
+  ): Promise<Appointment> {
+    return await this.appointmentsService.create(createAppointmentDto);
   }
 
   @Get()

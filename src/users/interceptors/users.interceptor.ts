@@ -13,7 +13,7 @@ export class SetThumbnailUrlAndDeletePasswordInterceptor
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map((data) => {
-        const { users } = data;
+        /* const { users } = data;
         if (users) {
           users.map((user) => {
             const { avatar } = user;
@@ -22,7 +22,7 @@ export class SetThumbnailUrlAndDeletePasswordInterceptor
               ? `${process.env.AVATAR_USER_HOST}/${avatar}`
               : null;
           });
-        }
+        }*/
         const { password } = data;
         if (password) {
           data.password = undefined;
