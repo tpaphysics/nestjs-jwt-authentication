@@ -1,12 +1,7 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+  <a href="https://github.com/tpaphysics/react-urban-shaves-desktop" target="blank"><img src="https://github.com/tpaphysics/react-urban-shaves-desktop/blob/main/assets/desktop/logo.png?raw=true"  alt="Nest Logo" /></a>
 </p>
-  
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-  
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
+<p align="center">
 <img src="https://img.shields.io/badge/yarn-%232C8EBB.svg?style=for-the-badge&logo=yarn&logoColor=white" alt="yarn" />
   
 <img src="https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJs" />
@@ -21,8 +16,7 @@
   
 ##  Descrição
   
-  
-Nessa postagem criamos uma API Rest com CRUD de usários juntamente com fluxo de autenticação JWT utilizando o framework [Nest](https://nestjs.com/ ). Desta forma podemos criar, deletar, pesquisar e atualizar uma tabela de usuários no banco de dados. Usamos também o [Prisma](https://www.prisma.io/ ) como ORM e criamos um container com o banco de dados postgres usando o [Docker Compose](https://docs.docker.com/compose/ ).
+  O projeto é uma API Rest para as aplicações [Urban Shaves Desktop](https://github.com/tpaphysics/react-urban-shaves-desktop) e [Urban Shaves Mobile](https://github.com/tpaphysics/react-native-urban-shaves-mobile). Possui fluxo de authenticação JWT e foi construída com o framework [Nest](https://nestjs.com/ ). Como ORM utilizamos o [Prisma](https://www.prisma.io/ ) e para documentação o [Swagger](https://swagger.io/). Utilizamos o banco de dados postgres usando o [Docker Compose](https://docs.docker.com/compose/ ).
   
 ##  Instalação
   
@@ -58,20 +52,18 @@ $ yarn rm:db
   
 ##  Observação
   
-Somente as rotas /login e de criação de usuário /users são públicas. Para tornar todas as rotas públicas basta colocar o decorator <strong>@IsPublicRoute()</strong> no UsersController como no exemplo abaixo:
+Para tornar todas as rotas públicas basta colocar o decorator <strong>@IsPublicRoute()</strong> na classe UsersController como no exemplo abaixo:
 
 ```typescript
-@IsPublicRoute() #aqui
-
+@IsPublicRoute()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-  ... ... ... ...
-  ... ... ... ...
+
+  createUser() {}
+}
 ```
 
-Agora você deve criar pelo menos um usuário no banco de dados. Você pode usar algum cliente http como curl, postman, insomnia, swagger ou usar o prisma studio.
-
-Usando o curl:
+## Criação de usuários
 
 ```bash
 curl -X 'POST' \
@@ -79,23 +71,13 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "email": "user@gmail.com",
-  "name": "UserName1",
-  "password": "Password1",
-  "age": 28,
-  "gender": "masculine"
+  "email": "ares@protonmail.com",
+  "name": "ares",
+  "password": "mypassword",
 }'
 ```
 
-Usando o prisma studio:
-
-```bash
-$ yarm prisma studio
-```
-
 ## Login
-
-Usando o curl:
 
 ```bash
 curl -X 'POST' \
@@ -103,12 +85,12 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "email": "user@gmail.com",
-  "password": "Password1",
+  "name": "ares",
+  "password": "mypassword",
 }'
 ```
 
-Usando o swagger:
+## Documentalçao da api com swagger
 
 ```url
 http://localhost:3000/api/login
@@ -122,11 +104,9 @@ Após efetuar login copie o access_token gerado:
 {
   "user": {
     "id": "0a177967-4161-4ad8-8c6d-02b8b22deaee",
-    "email": "Carlos_Fadel@gmail.com",
-    "name": "Harvey.Upton",
-    "age": 50,
-    "gender": "masculine",
-    "avatarFileName": "http://gentle-consul.com",
+    "email": "ares@protonmail.com",
+    "name": "ares",
+    "avatarFileName": null,
     "createdAt": 1651823528429,
     "updateAt": 1651823528429
   },
@@ -138,194 +118,9 @@ Cole no campo Authorize:
 
 <image width="360px" src="./.readme/authorize.example.png"/>
 
-## Upload de imagens com o multer
-
-No médodo <strong>update</strong> conseguimos fazer uploads de imagens para pasta <strong>upload</strong> no diretório corrente do projeto. O multer foi configurado no arquivo <strong>multer-config.ts</strong>. Para entender a integração do multer com NestJs basta ler a [documentação](https://docs.nestjs.com/techniques/file-upload). Abaixo configuramos o multer para filtar arquivos de imagens com extensões jpeg, jpg e png com tamanho máximo defindo no arquivo .env na variável AVATAR_SIZE_FILE.
-
-```typescript
-// multer-config.js
-
-import { Injectable, UnsupportedMediaTypeException } from '@nestjs/common';
-import { randomBytes } from 'crypto';
-
-import {
-  MulterModuleOptions,
-  MulterOptionsFactory,
-} from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-
-@Injectable()
-export default class MulterConfigService implements MulterOptionsFactory {
-  createMulterOptions(): MulterModuleOptions {
-    return {
-      storage: diskStorage({
-        destination: './upload',
-        filename: (_req, file, cb) => {
-          const { mimetype } = file;
-          const [, extension] = mimetype.split('/', 2);
-          const fileHashName = randomBytes(16).toString('hex');
-          const name = `${fileHashName}.${extension}`;
-          return cb(null, name);
-        },
-      }),
-      limits: { fileSize: Number(process.env.AVATAR_SIZE_FILE) * 1024 * 1024 },
-      fileFilter: (
-        _req: any,
-        file: Express.Multer.File,
-        cb: (error: Error | null, acceptFile: boolean) => void,
-      ) => {
-        if (['image/png', 'image/jpg', 'image/jpeg'].includes(file.mimetype)) {
-          cb(null, true);
-        } else {
-          cb(
-            new UnsupportedMediaTypeException(
-              'Only use jpg jpeg or png files!',
-            ),
-            false,
-          );
-        }
-      },
-    };
-  }
-}
-```
-
-## Paginação usando o Prisma
-
-Implementamos um sistema de paginação do tipo offset utilizando o Prisma no arquivo <strong>user.service.ts</strong>
-
-```typescript
-// user.service.ts
-
-async findAll(query: findAllUserDto): Promise<FindAllUserResponse> {
-    const { page, take } = query;
-
-    const totalUsers = await this.prisma.user.count();
-
-    if (!totalUsers || totalUsers == 0) {
-      throw new InternalServerErrorException('Not found users!');
-    }
-
-    if (take > totalUsers) {
-      throw new BadRequestException('Invalid number of users!');
-    }
-
-    const totalPages = Math.ceil(totalUsers / take);
-
-    if (page > totalPages) {
-      throw new BadRequestException(
-        `Maximum number of pages are ${totalPages}!`,
-      );
-    }
-
-    const users = await this.prisma.user.findMany({
-      skip: (page - 1) * take,
-      take,
-      orderBy: {
-        createdAt: 'asc',
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        age: true,
-        gender: true,
-        avatarFileName: true,
-        password: false,
-        createdAt: true,
-        updateAt: true,
-      },
-    });
-
-    return {
-      paginate: {
-        page: page,
-        totalPages,
-      },
-      users: [...users],
-    };
-  }
-```
-
-<p>
-<strong>skip</strong>: Número de resultados a serem ignordos
-</p>
-<p>
-<strong>take</strong>: Número de resultados retornados após o skip
-</p>
-
-De maneira intuitiva, temos:
-
-```
-page > 0
-skip=(page-1)take
-```
-
-E eles são validados no findAll-user.dto.ts como sendo do tipo númerico, inteiro e maior que 0
-
-```typescript
-import { Type } from 'class-transformer';
-import { IsInt, Min } from 'class-validator';
-import { User } from '../entities/user.entity';
-
-export class findAllUserDto extends User {
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  page: number;
-
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  take: number;
-```
-
 ## **💥 Considerações**
 
-Existem muita vatagens na utilização do NestJs para criação de APIs uma delas é o fato dele respeitar os principios do <strong>SOLID</strong>. Desta forma forma fica mais facil a escalabilidade do projeto e o trabalho em grupo com uma aquitetura padrão definida. O NestJs usa uma aquitetura muito semelhante a do framework [Angular](https://angular.io/), com uso de decorators. Particularmente achei bem interessante a abordagem da biblioteca [class-validator](https://www.npmjs.com/package/class-validator) para validação de campos através de decorators nos Data Transfer Objects (DTOs) :
-
-```typescript
-import { User } from '../entities/user.entity';
-import {
-  IsEmail,
-  IsIn,
-  IsInt,
-  IsString,
-  Matches,
-  Max,
-  MaxLength,
-  Min,
-  MinLength,
-} from 'class-validator';
-
-export class CreateUserDto extends User {
-  @IsString()
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  @Matches(/[a-zA-Z0-9_-]{2,20}/)
-  name: string;
-
-  @MinLength(6)
-  @MaxLength(20)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'Password too weak!',
-  })
-  password: string;
-
-  @IsInt()
-  @Min(1)
-  @Max(120)
-  age: number;
-
-  @IsString()
-  @IsIn(['masculine', 'feminine'])
-  gender: string;
-}
-```
-
-Outro fator interressante é o tratamento de erros de forma global através da utilização de middlewares. Existem inumeras outras vantagens na utilização NestJs. Para mais informações, consulte a [documentação](https://nestjs.com/).
+Existem muita vatagens na utilização do NestJs para criação de APIs uma delas é o fato dele respeitar os principios do <strong>SOLID</strong>. Desta forma é mais facil a escalabilidade do projeto e trabalho em grupo usando uma aquitetura padronizada. O NestJs usa uma aquitetura muito semelhante a do framework [Angular](https://angular.io/), com uso de decorators.
 
 ## **👨‍🚀 Autor**
 

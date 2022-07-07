@@ -32,7 +32,6 @@ import { UpdateUserWithThumbnailDto } from './dto/upload-image-user.dto';
 @Controller('users')
 @ApiTags('CRUD')
 @ApiBearerAuth()
-@IsPublicRoute()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
