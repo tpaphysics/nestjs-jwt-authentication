@@ -1,5 +1,6 @@
 <p align="center">
-  <a href="https://github.com/tpaphysics/react-urban-shaves-desktop" target="blank"><img src="https://github.com/tpaphysics/react-urban-shaves-desktop/blob/main/assets/desktop/logo.png?raw=true"  alt="Nest Logo" /></a>
+  <a href="https://github.com/tpaphysics/react-urban-shaves-desktop" target="blank">
+  <img src="https://raw.githubusercontent.com/tpaphysics/react-urban-shaves-desktop/main/assets/desktop/logo.png"  alt="urban-shaves-logo" /></a>
 </p>
 <p align="center">
 <img src="https://img.shields.io/badge/yarn-%232C8EBB.svg?style=for-the-badge&logo=yarn&logoColor=white" alt="yarn" />
@@ -16,7 +17,7 @@
   
 ##  Descrição
   
-  O projeto é uma API Rest para as aplicações [Urban Shaves Desktop](https://github.com/tpaphysics/react-urban-shaves-desktop) e [Urban Shaves Mobile](https://github.com/tpaphysics/react-native-urban-shaves-mobile). Possui fluxo de authenticação JWT e foi construída com o framework [Nest](https://nestjs.com/ ). Como ORM utilizamos o [Prisma](https://www.prisma.io/ ) e para documentação o [Swagger](https://swagger.io/). Utilizamos o banco de dados postgres usando o [Docker Compose](https://docs.docker.com/compose/ ).
+  O projeto é uma API Rest para as aplicações [Urban Shaves Desktop](https://github.com/tpaphysics/react-urban-shaves-desktop) e [Urban Shaves Mobile](https://github.com/tpaphysics/react-native-urban-shaves-mobile). Possui fluxo de authenticação JWT e foi construída com o framework [NestJs](https://nestjs.com/ ). Como ORM utilizamos o [Prisma](https://www.prisma.io/ ) e para documentação o [Swagger](https://swagger.io/). Utilizamos o banco de dados postgres usando o [Docker Compose](https://docs.docker.com/compose/ ).
   
 ##  Instalação
   
@@ -52,7 +53,7 @@ $ yarn rm:db
   
 ##  Observação
   
-Para tornar todas as rotas públicas basta colocar o decorator <strong>@IsPublicRoute()</strong> na classe UsersController como no exemplo abaixo:
+Para tornar todas as rotas públicas basta colocar o decorator <strong>@IsPublicRoute()</strong> na classe UsersController como mostrado abaixo:
 
 ```typescript
 @IsPublicRoute()
@@ -118,9 +119,15 @@ Cole no campo Authorize:
 
 <image width="360px" src="./.readme/authorize.example.png"/>
 
+## Prisma Studio
+
+```bash
+yarn prisma studio
+```
+
 ## **💥 Considerações**
 
-Existem muita vatagens na utilização do NestJs para criação de APIs uma delas é o fato dele respeitar os principios do <strong>SOLID</strong>. Desta forma é mais facil a escalabilidade do projeto e trabalho em grupo usando uma aquitetura padronizada. O NestJs usa uma aquitetura muito semelhante a do framework [Angular](https://angular.io/), com uso de decorators.
+Existem muitas vantagens na utilização do NestJs para criação de APIs pelo fato dele respeitar os principios do <strong>SOLID</strong>. Desta forma é mais facil a escalabilidade do projeto e trabalho em grupo usando uma aquitetura padronizada. O NestJs usa uma aquitetura muito semelhante a do framework [Angular](https://angular.io/), com uso de decorators.
 
 ## **👨‍🚀 Autor**
 
