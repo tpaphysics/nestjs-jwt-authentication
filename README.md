@@ -17,50 +17,52 @@
   
 ##  Descrição
   
-  O projeto é uma API Rest para as aplicações [Urban Shaves Desktop](https://github.com/tpaphysics/react-urban-shaves-desktop) e [Urban Shaves Mobile](https://github.com/tpaphysics/react-native-urban-shaves-mobile). Possui fluxo de authenticação JWT e foi construída com o framework [NestJs](https://nestjs.com/ ). Como ORM utilizamos o [Prisma](https://www.prisma.io/ ) e para documentação o [Swagger](https://swagger.io/). Utilizamos o banco de dados postgres usando o [Docker Compose](https://docs.docker.com/compose/ ).
-  
-##  Instalação
-  
-  
+  O API <strong>Urban Shaves</strong> criada para integração entre os apps [Urban Shaves web](https://github.com/tpaphysics/react-urban-shaves-web) e [Urban Shaves mobile](https://github.com/tpaphysics/react-native-urban-shaves-mobile) está sendo desenvolvida em [NestJs](https://nestjs.com/ ) com de autenticação JWT. Como ORM utilizamos o [Prisma](https://www.prisma.io/ ) e para documentação o [Swagger](https://swagger.io/). Utilizamos o banco de dados postgres através do [Docker Compose](https://docs.docker.com/compose/ ).
+
+## Instalação
+
 ```bash
 # Instalação das dependências
 $ yarn
-  
+
 # Iniciar container com banco de dados postgress (Você precisa ter o docker instalado!):
 $ yarn up:db
-  
+
 # Migração dos models definidos no schema.prisma para o banco de dados
 $ yarn prisma migrate dev
 ```
-  
-##  Iniciando o servidor
-  
-  
+
+## Iniciando o servidor
+
 ```bash
 # development
 $ yarn start
-  
+
 # watch mode
 $ yarn start:dev
-  
+
 # production mode
 $ yarn start:prod
 ```
+
 Para remover o container com o postgres:
+
 ```bash
 $ yarn rm:db
 ```
-  
-##  Observação
-  
-Para tornar todas as rotas públicas basta colocar o decorator <strong>@IsPublicRoute()</strong> na classe UsersController como mostrado abaixo:
+
+## Observação
+
+Para tornar rotas públicas basta adicionar o decorator <strong>@IsPublicRoute()</strong> como mostrado abaixo:
 
 ```typescript
-@IsPublicRoute()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  createUser() {}
+  @IsPublicRoute()
+  createUser() {
+    ...
+  }
 }
 ```
 
@@ -86,7 +88,7 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "name": "ares",
+  "email": "ares@protonmail.com",
   "password": "mypassword",
 }'
 ```
@@ -94,6 +96,8 @@ curl -X 'POST' \
 ## Documentalçao da api com swagger
 
 ```url
+http://localhost:3000/api/appointments
+http://localhost:3000/api/users
 http://localhost:3000/api/login
 ```
 
