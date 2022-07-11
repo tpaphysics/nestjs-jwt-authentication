@@ -112,6 +112,17 @@ export class UsersService {
     id: string,
     data: UpdateUserDto,
   ): Promise<User> {
+    const { password } = data;
+
+    if (password) {
+      const hash = await bycrypt.hash(password, 10);
+
+      if (!hash) {
+        throw new InternalServerErrorException('Problem saving password!');
+      }
+      data['password'] = hash;
+    }
+
     return await this.prisma.user.update({
       where: {
         id,
