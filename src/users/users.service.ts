@@ -112,6 +112,14 @@ export class UsersService {
     id: string,
     data: UpdateUserDto,
   ): Promise<User> {
+    /*
+    const { id: currentUserId } = user;
+    if (currentUserId !== id) {
+      throw new BadRequestException(
+        'The operation cannot be performed. Lamer!',
+      );
+    }*/
+    /*
     const { password } = data;
 
     if (password) {
@@ -121,7 +129,7 @@ export class UsersService {
         throw new InternalServerErrorException('Problem saving password!');
       }
       data['password'] = hash;
-    }
+    } */
 
     return await this.prisma.user.update({
       where: {

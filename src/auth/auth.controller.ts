@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   HttpCode,
   HttpStatus,
@@ -13,6 +14,7 @@ import { IsPublicRoute } from './decorators/is-public-route.decorator';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginRequestBody } from './models/LoginRequestBody';
 import { UserToken } from './models/UserToken';
+import { ForgotDto } from './models/forgot.dto';
 @IsPublicRoute()
 @Controller()
 @ApiTags('Sigin')
@@ -30,5 +32,17 @@ export class AuthController {
   })
   async login(@Request() req: AuthRequest): Promise<any> {
     return await this.authService.login(req.user);
+  }
+  @Post('forgot')
+  @IsPublicRoute()
+  @ApiBody({ type: () => LoginRequestBody })
+  @ApiResponse({
+    status: 200,
+    description: 'Send email link for new password',
+    type: Object,
+  })
+  @HttpCode(HttpStatus.OK)
+  async forgotPassword(@Body() forgotDto: ForgotDto): Promise<any> {
+    return await this.authService.forgot(forgotDto.email);
   }
 }

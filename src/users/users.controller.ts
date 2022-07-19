@@ -28,6 +28,7 @@ import {
 } from '@nestjs/swagger';
 import FindAllUserResponse from './entities/find-all-users-response.entity';
 import { UpdateUserWithThumbnailDto } from './dto/upload-image-user.dto';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @Controller('users')
 @ApiTags('CRUD')

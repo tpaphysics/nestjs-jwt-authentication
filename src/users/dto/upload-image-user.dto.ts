@@ -7,12 +7,6 @@ export class UpdateUserWithThumbnailDto extends UpdateUserDto {
   name?: string;
   @IsOptional()
   email?: string;
-  @IsOptional()
-  age?: number;
-  @IsOptional()
-  password?: string;
-  @IsOptional()
-  gender?: string;
   @ApiPropertyOptional({ type: 'string', format: 'binary' })
   file: any;
 }
