@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IsPublicRoute } from 'src/auth/decorators/is-public-route.decorator';
-import { moveMessagePortToContext } from 'worker_threads';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';

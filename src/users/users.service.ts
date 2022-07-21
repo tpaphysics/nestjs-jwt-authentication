@@ -3,6 +3,7 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  Query,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -41,7 +42,10 @@ export class UsersService {
     });
   }
 
-  async findAll(query: findAllUserDto): Promise<FindAllUserResponse> {
+  async findAll(
+    query: findAllUserDto,
+    currentUser?: User,
+  ): Promise<FindAllUserResponse> {
     const { page, take } = query;
 
     const totalUsers = await this.prisma.user.count();
@@ -62,21 +66,48 @@ export class UsersService {
       );
     }
 
-    const users = await this.prisma.user.findMany({
-      skip: (page - 1) * take,
-      take,
-      orderBy: {
-        createdAt: 'asc',
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        avatar: true,
-        createdAt: true,
-        updateAt: true,
-      },
-    });
+    let users;
+    if (currentUser) {
+      users = await this.prisma.user.findMany({
+        skip: (page - 1) * take,
+        take,
+        orderBy: {
+          createdAt: 'asc',
+        },
+        where: {
+          NOT: {
+            email: {
+              equals: currentUser.email,
+            },
+          },
+        },
+
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          avatar: true,
+          createdAt: true,
+          updateAt: true,
+        },
+      });
+    } else {
+      users = await this.prisma.user.findMany({
+        skip: (page - 1) * take,
+        take,
+        orderBy: {
+          createdAt: 'asc',
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          avatar: true,
+          createdAt: true,
+          updateAt: true,
+        },
+      });
+    }
 
     return {
       paginate: {
@@ -158,5 +189,11 @@ export class UsersService {
         id,
       },
     });
+  }
+  async findAllProvidersExceptCurrentUser(
+    @Query() query: findAllUserDto,
+    curentUser: User,
+  ): Promise<FindAllUserResponse> {
+    return await this.findAll(query, curentUser);
   }
 }

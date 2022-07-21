@@ -55,14 +55,8 @@ export class UsersController {
   //  description: 'The found users',
   //  type: FindAllUserResponse,
   //})
-  async findAll(@Query() query: findAllUserDto): Promise<FindAllUserResponse> {
+  async findAll(@Query() query: findAllUserDto): Promise<any> {
     return await this.usersService.findAll(query);
-  }
-
-  @Get(':id')
-  @ApiOperation({ summary: 'Find user' })
-  async findOne(@Param('id') id: string): Promise<User> {
-    return this.usersService.findOne(id);
   }
 
   @Patch(':id')
@@ -85,5 +79,22 @@ export class UsersController {
   @ApiOperation({ summary: 'Delete user' })
   async remove(@Param('id') id: string): Promise<User> {
     return this.usersService.remove(id);
+  }
+
+  @Get('providers')
+  async findAllProvidersExceptCurrentUser(
+    @Query() query: findAllUserDto,
+    @CurrentUser() user: User,
+  ): Promise<FindAllUserResponse> {
+    console.log(user);
+    return await this.usersService.findAllProvidersExceptCurrentUser(
+      query,
+      user,
+    );
+  }
+  @Get(':id')
+  @ApiOperation({ summary: 'Find user' })
+  async findOne(@Param('id') id: string): Promise<User> {
+    return this.usersService.findOne(id);
   }
 }
