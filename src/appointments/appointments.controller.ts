@@ -12,6 +12,7 @@ import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { ListProviderDayAvailabilityDto } from './dto/list-provider-day-availability.dto';
 import { ListProviderMonthAvailabilityDto } from './dto/list-provider-month-availability.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { Appointment } from './entities/appointment.entity';
@@ -33,12 +34,20 @@ export class AppointmentsController {
       currentUser,
     );
   }
-  @Post('providers')
+  @Post('provider/month')
   async listProviderMonthAvailability(
     @Body() listProviderMonthAvailabilityDto: ListProviderMonthAvailabilityDto,
   ): Promise<any> {
     return await this.appointmentsService.listProviderMonthAvailability(
       listProviderMonthAvailabilityDto,
+    );
+  }
+  @Post('provider/day')
+  async listProviderDayAvailability(
+    @Body() listProviderDayAvailabilityDto: ListProviderDayAvailabilityDto,
+  ): Promise<any> {
+    return await this.appointmentsService.listProviderDayAvailability(
+      listProviderDayAvailabilityDto,
     );
   }
 

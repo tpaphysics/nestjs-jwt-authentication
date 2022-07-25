@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { ListProviderMonthAvailabilityDto } from './dto/list-provider-month-availability.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
-import { getDate, getDaysInMonth, getYear } from 'date-fns';
+import { getDate, getDaysInMonth, getHours } from 'date-fns';
 import { raw } from '@prisma/client/runtime';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/entities/user.entity';
@@ -88,7 +88,46 @@ export class AppointmentsService {
       });
       return {
         day,
-        availability: appointmentsInDay.length < 10,
+        availability: appointmentsInDay.length < 12,
+      };
+    });
+    return availability;
+  }
+  async listProviderDayAvailability(
+    listProviderDayAvailabilityDto: ListProviderDayAvailabilityDto,
+  ): Promise<any> {
+    const { day, month, year, provider_id } = listProviderDayAvailabilityDto;
+
+    const parsedDay = String(day).padStart(2, '0');
+    const parsedMonth = String(month).padStart(2, '0');
+    const checkDateAvailability = `${parsedDay}-${parsedMonth}-${year}`;
+
+    const appointments = await this.prisma.$queryRaw<Appointment[]>`
+    SELECT * FROM 
+    appointments 
+    WHERE 
+    provider_id=${provider_id}
+    AND
+    to_char(date,'DD-MM-YYYY')=${checkDateAvailability}
+    `;
+
+    const numberOfAppointmentsInDay = 12; // 08h00 at 21h00
+    const startWork = 8;
+    const finalWork = 21;
+    const numberOfHoursArray = Array.from(
+      {
+        length: numberOfAppointmentsInDay,
+      },
+      (_, index) =>
+        index + startWork >= 12 ? index + 1 + startWork : index + startWork,
+    );
+    const availability = numberOfHoursArray.map((hour) => {
+      const appointmentsInHour = appointments.find((appointment) => {
+        return getHours(new Date(appointment.date)) === hour;
+      });
+      return {
+        hour,
+        availability: !appointmentsInHour,
       };
     });
     return availability;
