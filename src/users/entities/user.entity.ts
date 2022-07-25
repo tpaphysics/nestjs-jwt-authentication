@@ -12,7 +12,7 @@ export class User {
   @ApiProperty({ default: faker.internet.url() })
   avatar?: string;
   @ApiProperty({ default: faker.datatype.datetime() })
-  createdAt?: string | Date;
+  created_at?: string | Date;
   @ApiProperty({ default: faker.datatype.datetime() })
-  updateAt?: string | Date;
+  updated_at?: string | Date;
 }

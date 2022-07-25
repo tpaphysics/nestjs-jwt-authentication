@@ -112,8 +112,8 @@ Após efetuar login copie o access_token gerado:
     "email": "ares@protonmail.com",
     "name": "ares",
     "avatarFileName": null,
-    "createdAt": 1651823528429,
-    "updateAt": 1651823528429
+    "created_at": 1651823528429,
+    "updated_at": 1651823528429
   },
   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZmNiZTI4NS03Y2QzLTQxZjItOGQ4YS1kNWFhMDA3MWE3MDQiLCJlbWFpbCI6InRlc3RlQHRlc3RlLmNvbSIsIm5hbWUiOiJ0ZXN0ZSIsImlhdCI6MTY1MTAwOTYzMywiZXhwIjoxNjUzNjAxNjMzfQ.9D_7gjQ96aRYYahZVZQqQLgEpD699YOkhKozy6EYgsA"
 }

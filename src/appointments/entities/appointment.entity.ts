@@ -6,11 +6,13 @@ export class Appointment implements Prisma.appointmentsUncheckedCreateInput {
   @ApiProperty({ default: faker.datatype.uuid() })
   id?: string;
   @ApiProperty({ default: faker.datatype.datetime() })
-  date: string | Date;
-  @ApiProperty({ default: faker.datatype.datetime() })
-  createdAt?: string | Date;
-  @ApiProperty({ default: faker.datatype.datetime() })
-  updateAt?: string | Date;
+  date: Date;
   @ApiProperty({ default: faker.datatype.uuid() })
-  providerId: string;
+  provider_id: string;
+  @ApiProperty({ default: faker.datatype.uuid() })
+  client_id: string;
+  @ApiProperty({ default: faker.datatype.datetime() })
+  created_at?: Date;
+  @ApiProperty({ default: faker.datatype.datetime() })
+  updated_at?: Date;
 }

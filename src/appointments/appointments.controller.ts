@@ -8,16 +8,16 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { IsPublicRoute } from 'src/auth/decorators/is-public-route.decorator';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { User } from 'src/users/entities/user.entity';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { ListProviderMonthAvailabilityDto } from './dto/list-provider-month-availability.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { Appointment } from './entities/appointment.entity';
 
-@Controller('appointments')
 @ApiTags('CRUD')
 @ApiBearerAuth()
-@IsPublicRoute()
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
@@ -26,20 +26,32 @@ export class AppointmentsController {
   @ApiOperation({ summary: 'Create appointement' })
   async create(
     @Body() createAppointmentDto: CreateAppointmentDto,
+    @CurrentUser() currentUser: User,
   ): Promise<Appointment> {
-    return await this.appointmentsService.create(createAppointmentDto);
+    return await this.appointmentsService.create(
+      createAppointmentDto,
+      currentUser,
+    );
+  }
+  @Post('providers')
+  async listProviderMonthAvailability(
+    @Body() listProviderMonthAvailabilityDto: ListProviderMonthAvailabilityDto,
+  ): Promise<any> {
+    return await this.appointmentsService.listProviderMonthAvailability(
+      listProviderMonthAvailabilityDto,
+    );
   }
 
   @Get()
   @ApiOperation({ summary: 'Find appointments' })
-  findAll() {
-    return this.appointmentsService.findAll();
+  async findAll() {
+    return await this.appointmentsService.findAll();
   }
 
   @ApiOperation({ summary: 'Find appointment' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.appointmentsService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.appointmentsService.findOne(id);
   }
 
   @Patch(':id')
@@ -48,15 +60,15 @@ export class AppointmentsController {
     description: 'ThubnailUser',
     type: UpdateAppointmentDto,
   })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
   ) {
-    return this.appointmentsService.update(id, updateAppointmentDto);
+    return await this.appointmentsService.update(id, updateAppointmentDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.appointmentsService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.appointmentsService.remove(id);
   }
 }

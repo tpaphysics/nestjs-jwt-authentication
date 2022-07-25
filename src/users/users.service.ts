@@ -72,7 +72,7 @@ export class UsersService {
         skip: (page - 1) * take,
         take,
         orderBy: {
-          createdAt: 'asc',
+          created_at: 'asc',
         },
         where: {
           NOT: {
@@ -87,8 +87,8 @@ export class UsersService {
           name: true,
           email: true,
           avatar: true,
-          createdAt: true,
-          updateAt: true,
+          created_at: true,
+          updated_at: true,
         },
       });
     } else {
@@ -96,15 +96,15 @@ export class UsersService {
         skip: (page - 1) * take,
         take,
         orderBy: {
-          createdAt: 'asc',
+          created_at: 'asc',
         },
         select: {
           id: true,
           name: true,
           email: true,
           avatar: true,
-          createdAt: true,
-          updateAt: true,
+          created_at: true,
+          updated_at: true,
         },
       });
     }

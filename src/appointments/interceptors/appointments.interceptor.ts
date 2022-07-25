@@ -22,8 +22,8 @@ export class FormatDataInterceptor implements NestInterceptor {
               : null;
           });
         }*/
-        const { createdAt } = data;
-        if (createdAt) {
+        const { created_at } = data;
+        if (created_at) {
           return data;
         }
 
