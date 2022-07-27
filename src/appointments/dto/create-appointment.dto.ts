@@ -1,15 +1,19 @@
 import faker from '@faker-js/faker';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsDate, IsUUID, MaxDate, MinDate } from 'class-validator';
-import { add } from 'date-fns';
+import { IsDate, IsUUID, MinDate } from 'class-validator';
+import { IsValidAppointmentTimes } from '../decorators/is-valid-appointment-times.decorator';
 
 export class CreateAppointmentDto {
   @ApiProperty({ default: faker.datatype.datetime() })
   @Transform(({ value }) => new Date(value))
   @IsDate()
-  //@MinDate(new Date()) // Now
-  //@MaxDate(add(new Date(), { months: 6 })) //Add 3 months after
+  @MinDate(new Date())
+  @IsValidAppointmentTimes({
+    startTimeOfWorkHour: 8,
+    lunchHour: 12,
+    endTimeOfWorkHour: 20,
+  })
   date: Date;
   @ApiProperty({ default: faker.datatype.uuid() })
   @IsUUID()

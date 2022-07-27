@@ -7,6 +7,8 @@ export class ListProviderDayAvailabilityDto {
   @IsNumber()
   day: number;
   @IsNumber()
+  @Min(1)
+  @Max(12)
   month: number;
   @IsNumber()
   @Min(getYear(new Date()))

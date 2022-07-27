@@ -3,13 +3,21 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { ListProviderMonthAvailabilityDto } from './dto/list-provider-month-availability.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
-import { getDate, getDaysInMonth, getHours } from 'date-fns';
+import {
+  format,
+  getDate,
+  getDaysInMonth,
+  getHours,
+  getMonth,
+  getYear,
+} from 'date-fns';
 import { raw } from '@prisma/client/runtime';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { Prisma } from '@prisma/client';
 import { Appointment } from './entities/appointment.entity';
 import { ListProviderDayAvailabilityDto } from './dto/list-provider-day-availability.dto';
+import { IsPublicRoute } from 'src/auth/decorators/is-public-route.decorator';
 
 @Injectable()
 export class AppointmentsService {
@@ -17,10 +25,40 @@ export class AppointmentsService {
 
   async create(data: CreateAppointmentDto, currentUser: User) {
     const { id } = currentUser;
+    const { provider_id, date } = data;
 
-    if (id === data.provider_id) {
+    if (id === provider_id) {
       throw new BadRequestException("You can't create an aging with yourself!");
     }
+
+    const existProvider = await this.prisma.user.findUnique({
+      where: {
+        id: provider_id,
+      },
+    });
+
+    if (!existProvider) {
+      throw new BadRequestException('The service provider does not exist!');
+    }
+
+    const checkDayAvailability = `${format(date, 'dd-MM-yyyy')}`;
+    const appointments = await this.prisma.$queryRaw<Appointment[]>`
+    SELECT * FROM 
+    appointments 
+    WHERE 
+    provider_id=${provider_id}
+    AND
+    to_char(date,'DD-MM-YYYY')=${checkDayAvailability}
+    `;
+
+    const existAppointmentInHour = appointments.filter((appointment) => {
+      return getHours(new Date(appointment.date)) == getHours(date);
+    });
+
+    if (existAppointmentInHour.length !== 0) {
+      throw new BadRequestException('This time is not available!');
+    }
+
     return await this.prisma.appointments.create({
       data: {
         ...data,
@@ -61,9 +99,8 @@ export class AppointmentsService {
     listProviderMonthAvailabilityDto: ListProviderMonthAvailabilityDto,
   ): Promise<any> {
     const { year, month, provider_id } = listProviderMonthAvailabilityDto;
-    //const res = new Date(year, month - 1, 1, 9, 0).toTimeString();
     const parsedMonth = String(month).padStart(2, '0');
-    const checkDateAvailability = `${parsedMonth}-${year}`;
+    const checkMonthAvailability = `${parsedMonth}-${year}`;
 
     const appointments = await this.prisma.$queryRaw<Appointment[]>`
     SELECT * FROM 
@@ -71,10 +108,8 @@ export class AppointmentsService {
     WHERE 
     provider_id=${provider_id}
     AND
-    to_char(date,'MM-YYYY')=${checkDateAvailability}
-     
+    to_char(date,'MM-YYYY')=${checkMonthAvailability}
     `;
-    console.log(appointments);
     const numberOfDaysInMonth = getDaysInMonth(new Date(year, month - 1));
 
     const numberOfDaysArray = Array.from(
@@ -100,7 +135,7 @@ export class AppointmentsService {
 
     const parsedDay = String(day).padStart(2, '0');
     const parsedMonth = String(month).padStart(2, '0');
-    const checkDateAvailability = `${parsedDay}-${parsedMonth}-${year}`;
+    const checkDayAvailability = `${parsedDay}-${parsedMonth}-${year}`;
 
     const appointments = await this.prisma.$queryRaw<Appointment[]>`
     SELECT * FROM 
@@ -108,7 +143,7 @@ export class AppointmentsService {
     WHERE 
     provider_id=${provider_id}
     AND
-    to_char(date,'DD-MM-YYYY')=${checkDateAvailability}
+    to_char(date,'DD-MM-YYYY')=${checkDayAvailability}
     `;
 
     const numberOfAppointmentsInDay = 12; // 08h00 at 21h00

@@ -92,6 +92,12 @@ export class UsersController {
       user,
     );
   }
+  @Get('me')
+  @ApiOperation({ summary: 'Find user' })
+  async curentUser(@CurrentUser() user: User): Promise<User> {
+    return await user;
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Find user' })
   async findOne(@Param('id') id: string): Promise<User> {
