@@ -1,26 +1,46 @@
-import { Injectable } from '@nestjs/common';
-import { CreateProviderDto } from './dto/create-provider.dto';
-import { UpdateProviderDto } from './dto/update-provider.dto';
+import { Injectable, Param, Query } from '@nestjs/common';
+import { getDaysInMonth, getDate } from 'date-fns';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { ListProviderMonthQueryDto } from './dto/list-provider-month-query.dto';
 
 @Injectable()
 export class ProvidersService {
-  create(createProviderDto: CreateProviderDto) {
-    return 'This action adds a new provider';
-  }
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return `This action returns all providers`;
-  }
+  async listProviderMonthAvailability(
+    @Param('provider_id') provider_id: string,
+    @Query() query: ListProviderMonthQueryDto,
+  ): Promise<any> {
+    const { month, year } = query;
 
-  findOne(id: number) {
-    return `This action returns a #${id} provider`;
-  }
+    const parsedMonth = String(month).padStart(2, '0');
+    const checkMonthAvailability = `${parsedMonth}-${year}`;
 
-  update(id: number, updateProviderDto: UpdateProviderDto) {
-    return `This action updates a #${id} provider`;
-  }
+    const appointments = await this.prisma.$queryRaw<Appointment[]>`
+    SELECT * FROM 
+    appointments 
+    WHERE 
+    provider_id=${provider_id}
+    AND
+    to_char(date,'MM-YYYY')=${checkMonthAvailability}
+    `;
+    const numberOfDaysInMonth = getDaysInMonth(new Date(year, month - 1));
 
-  remove(id: number) {
-    return `This action removes a #${id} provider`;
+    const numberOfDaysArray = Array.from(
+      { length: numberOfDaysInMonth },
+      (_, index) => index + 1,
+    );
+
+    const availability = numberOfDaysArray.map((day) => {
+      const appointmentsInDay = appointments.filter((appointment) => {
+        return getDate(new Date(appointment.date)) === day;
+      });
+      return {
+        day,
+        availability: appointmentsInDay.length < 12,
+      };
+    });
+    return availability;
   }
 }
