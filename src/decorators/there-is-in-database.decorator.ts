@@ -1,6 +1,4 @@
 import {
-  isEmail,
-  isUUID,
   registerDecorator,
   ValidationArguments,
   ValidationOptions,

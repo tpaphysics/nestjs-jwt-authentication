@@ -1,19 +1,6 @@
-import { User } from '../entities/user.entity';
-import {
-  IsEmail,
-  IsIn,
-  IsInt,
-  IsString,
-  Matches,
-  Max,
-  MaxLength,
-  Min,
-  MinLength,
-} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { faker } from '@faker-js/faker';
-import { ThereIsInDataBase } from 'src/decorators/there-is-in-database.decorator';
-import { Transform } from 'class-transformer';
+import { IsString } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({ default: faker.internet.email().toLocaleLowerCase() })

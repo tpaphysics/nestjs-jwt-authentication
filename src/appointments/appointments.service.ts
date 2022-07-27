@@ -3,21 +3,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { ListProviderMonthAvailabilityDto } from './dto/list-provider-month-availability.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
-import {
-  format,
-  getDate,
-  getDaysInMonth,
-  getHours,
-  getMonth,
-  getYear,
-} from 'date-fns';
-import { raw } from '@prisma/client/runtime';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { format, getDate, getDaysInMonth, getHours } from 'date-fns';
+
 import { User } from 'src/users/entities/user.entity';
-import { Prisma } from '@prisma/client';
 import { Appointment } from './entities/appointment.entity';
 import { ListProviderDayAvailabilityDto } from './dto/list-provider-day-availability.dto';
-import { IsPublicRoute } from 'src/auth/decorators/is-public-route.decorator';
 
 @Injectable()
 export class AppointmentsService {
@@ -138,7 +128,7 @@ export class AppointmentsService {
 
     const numberOfAppointmentsInDay = 12; // 08h00 at 21h00
     const startWork = 8;
-    const finalWork = 21;
+    // const finalWork = 21;
     const numberOfHoursArray = Array.from(
       {
         length: numberOfAppointmentsInDay,

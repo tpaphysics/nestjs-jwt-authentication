@@ -1,15 +1,7 @@
 import faker from '@faker-js/faker';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsDate,
-  isEmail,
-  isString,
-  isUUID,
-  IsUUID,
-  MinDate,
-  ValidateNested,
-} from 'class-validator';
+import { IsDate, isString, isUUID, MinDate } from 'class-validator';
 import { ThereIsInDataBase } from 'src/decorators/there-is-in-database.decorator';
 import { IsValidAppointmentTimes } from '../decorators/is-valid-appointment-times.decorator';
 
