@@ -11,6 +11,7 @@ import { JwtAuthGuard } from './auth/gards/jwt-auth.guard';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { MailModule } from './mail/mail.module';
 import { CheckDataBaseConstraint } from './decorators/there-is-in-database.decorator';
+import { ProvidersModule } from './providers/providers.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CheckDataBaseConstraint } from './decorators/there-is-in-database.decor
     }),
     AppointmentsModule,
     MailModule,
+    ProvidersModule,
   ],
   providers: [
     PrismaService,
