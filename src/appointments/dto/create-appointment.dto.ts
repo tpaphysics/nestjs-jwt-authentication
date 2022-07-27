@@ -1,7 +1,16 @@
 import faker from '@faker-js/faker';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsDate, IsUUID, MinDate } from 'class-validator';
+import {
+  IsDate,
+  isEmail,
+  isString,
+  isUUID,
+  IsUUID,
+  MinDate,
+  ValidateNested,
+} from 'class-validator';
+import { ThereIsInDataBase } from 'src/decorators/there-is-in-database.decorator';
 import { IsValidAppointmentTimes } from '../decorators/is-valid-appointment-times.decorator';
 
 export class CreateAppointmentDto {
@@ -16,6 +25,10 @@ export class CreateAppointmentDto {
   })
   date: Date;
   @ApiProperty({ default: faker.datatype.uuid() })
-  @IsUUID()
+  @ThereIsInDataBase({
+    model: 'user',
+    field: 'id',
+    validators: [isUUID, isString],
+  })
   provider_id: string;
 }

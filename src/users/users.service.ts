@@ -18,28 +18,23 @@ export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateUserDto): Promise<User> {
-    const { email, password } = data;
+    const { password } = data;
 
-    const existUser = await this.prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-
-    if (existUser) {
-      throw new ConflictException('User not available!');
-    }
     const hash = await bycrypt.hash(password, 10);
 
     if (!hash) {
       throw new InternalServerErrorException('Problem saving password!');
     }
-    return await this.prisma.user.create({
-      data: {
-        ...data,
-        password: await hash,
-      },
-    });
+    try {
+      return await this.prisma.user.create({
+        data: {
+          ...data,
+          password: await hash,
+        },
+      });
+    } catch {
+      throw new BadRequestException('User not availability!');
+    }
   }
 
   async findAll(

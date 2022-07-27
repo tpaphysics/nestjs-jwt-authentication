@@ -10,6 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/gards/jwt-auth.guard';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { MailModule } from './mail/mail.module';
+import { CheckDataBaseConstraint } from './decorators/there-is-in-database.decorator';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { MailModule } from './mail/mail.module';
   ],
   providers: [
     PrismaService,
+    CheckDataBaseConstraint,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

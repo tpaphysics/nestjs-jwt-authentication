@@ -31,16 +31,6 @@ export class AppointmentsService {
       throw new BadRequestException("You can't create an aging with yourself!");
     }
 
-    const existProvider = await this.prisma.user.findUnique({
-      where: {
-        id: provider_id,
-      },
-    });
-
-    if (!existProvider) {
-      throw new BadRequestException('The service provider does not exist!');
-    }
-
     const checkDayAvailability = `${format(date, 'dd-MM-yyyy')}`;
     const appointments = await this.prisma.$queryRaw<Appointment[]>`
     SELECT * FROM 
