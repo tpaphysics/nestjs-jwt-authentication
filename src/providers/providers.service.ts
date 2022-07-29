@@ -1,17 +1,19 @@
-import { Injectable, Param, Query } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { getDaysInMonth, getDate } from 'date-fns';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ListProviderMonthQueryDto } from './dto/list-provider-month-query.dto';
+import { ListProviderMonthAvailabilityParamDto } from './dto/list-provider-month-availability.param.dto';
+import { ListProviderMonthAvailabilityQueryDto } from './dto/list-provider-month-availability.query.dto';
 
 @Injectable()
 export class ProvidersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async listProviderMonthAvailability(
-    @Param('provider_id') provider_id: string,
-    @Query() query: ListProviderMonthQueryDto,
+    param: ListProviderMonthAvailabilityParamDto,
+    query: ListProviderMonthAvailabilityQueryDto,
   ): Promise<any> {
+    const { provider_id } = param;
     const { month, year } = query;
 
     const parsedMonth = String(month).padStart(2, '0');

@@ -1,7 +1,8 @@
-import { Controller, Get, Param, ParseUUIDPipe, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ProvidersService } from './providers.service';
 
-import { ListProviderMonthQueryDto } from './dto/list-provider-month-query.dto';
+import { ListProviderMonthAvailabilityQueryDto } from './dto/list-provider-month-availability.query.dto';
+import { ListProviderMonthAvailabilityParamDto } from './dto/list-provider-month-availability.param.dto';
 
 @Controller('providers')
 export class ProvidersController {
@@ -9,11 +10,11 @@ export class ProvidersController {
 
   @Get(':provider_id/month-availability')
   async listProviderMonthAvailability(
-    @Param('provider_id', new ParseUUIDPipe()) provider_id: string,
-    @Query() query: ListProviderMonthQueryDto,
+    @Param() param: ListProviderMonthAvailabilityParamDto,
+    @Query() query: ListProviderMonthAvailabilityQueryDto,
   ) {
     return await this.providersService.listProviderMonthAvailability(
-      provider_id,
+      param,
       query,
     );
   }

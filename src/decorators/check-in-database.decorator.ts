@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import {
   registerDecorator,
   ValidationArguments,
@@ -11,41 +12,49 @@ interface Props {
   model: 'user' | 'appointment';
   field: string;
   invert?: true;
-  validators: ((value: any) => boolean)[];
+  validators?: Array<{
+    validationCallback: (value: any) => boolean;
+    message: string;
+  }>;
 }
 
-export function ThereIsInDataBase(
+export function CheckInDataBase(
   property: Props,
   validationOptions?: ValidationOptions,
 ) {
   return (object: any, propertyName: string) => {
     registerDecorator({
+      name: 'checkInDataBase',
       target: object.constructor,
       propertyName,
       options: validationOptions,
       constraints: [property],
-      validator: CheckDataBaseConstraint,
+      validator: CheckInDataBaseConstraint,
     });
   };
 }
 
-@ValidatorConstraint({ name: 'ThereIsInDataBase' })
-export class CheckDataBaseConstraint implements ValidatorConstraintInterface {
+@ValidatorConstraint({ name: 'CheckInDataBase' })
+export class CheckInDataBaseConstraint implements ValidatorConstraintInterface {
   constructor(private prisma: PrismaService) {}
   async validate(value: any, args: ValidationArguments) {
     const [Property] = args.constraints;
     const { model, field, invert, validators } = Property as Props;
 
-    const isValidResult = validators.map((validator) => {
-      return validator(value);
-    });
+    if (validators) {
+      const validationResultArray = validators.map((obj) => {
+        const { message, validationCallback } = obj;
+        return { result: validationCallback(value), message };
+      });
+      const notAproveValidation = validationResultArray.filter(
+        (obj) => obj.result === false,
+      );
 
-    const isValid = isValidResult.filter((result) => result === false);
-
-    if (!(isValid.length === 0)) {
-      return false;
+      if (!(notAproveValidation.length === 0)) {
+        const errorMessages = notAproveValidation.map((obj) => obj.message);
+        throw new BadRequestException(errorMessages);
+      }
     }
-
     if (invert) {
       return !(await this.prisma[model].findUnique({
         where: {

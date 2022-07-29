@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 import { Min, Max } from 'class-validator';
 import { getYear } from 'date-fns';
 
-export class ListProviderMonthQueryDto {
+export class ListProviderMonthAvailabilityQueryDto {
   @ApiProperty()
   @Type(() => Number)
   @Min(1)

@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-
 import { UsersModule } from './users/users.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -10,7 +9,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/gards/jwt-auth.guard';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { MailModule } from './mail/mail.module';
-import { CheckDataBaseConstraint } from './decorators/there-is-in-database.decorator';
+import { CheckInDataBaseConstraint } from './decorators/check-in-database.decorator';
 import { ProvidersModule } from './providers/providers.module';
 
 @Module({
@@ -27,7 +26,7 @@ import { ProvidersModule } from './providers/providers.module';
   ],
   providers: [
     PrismaService,
-    CheckDataBaseConstraint,
+    CheckInDataBaseConstraint,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
