@@ -4,7 +4,7 @@ import { ProvidersController } from './providers.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
-  exports: [ProvidersService],
+  exports: [ProvidersService, PrismaModule],
   controllers: [ProvidersController],
   imports: [PrismaModule],
   providers: [ProvidersService],

@@ -15,11 +15,15 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
-    "test:watch": "jest --watch",
+    "test:watch": "yarn db:reset && jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "up:db": "docker-compose -f ./docker/docker-compose.yml --env-file .env  up -d",
+    "compose:up":"docker-compose -f ./docker/docker-compose.yml --env-file .env  up -d",
+    "migrate:dev":"yarn prisma migrate dev",
+    "migrate:test": "yarn prisma migrate dev --schema ./prisma/test/schema.prisma",
+    "db:reset": "yarn prisma migrate reset --schema ./prisma/test/schema.prisma --force",
+    "up:db": "yarn compose:up && yarn migrate:dev && yarn migrate:test",
     "rm:db": "docker rm -f postgres"
   },
   "dependencies": {
@@ -80,6 +84,9 @@
     "typescript": "^4.3.5"
   },
   "jest": {
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/$1"
+    },
     "moduleFileExtensions": [
       "js",
       "json",

@@ -6,10 +6,8 @@ import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { format, getDate, getDaysInMonth, getHours } from 'date-fns';
 
 import { User } from 'src/users/entities/user.entity';
-import { Prisma } from '@prisma/client';
 import { Appointment } from './entities/appointment.entity';
 import { ListProviderDayAvailabilityDto } from './dto/list-provider-day-availability.dto';
-import { IsPublicRoute } from 'src/auth/decorators/is-public-route.decorator';
 
 @Injectable()
 export class AppointmentsService {

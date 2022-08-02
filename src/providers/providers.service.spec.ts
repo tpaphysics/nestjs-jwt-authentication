@@ -1,18 +1,29 @@
+import faker from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { ProvidersService } from './providers.service';
 
 describe('ProvidersService', () => {
-  let service: ProvidersService;
+  let prisma: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ProvidersService],
+      providers: [PrismaService, ProvidersService],
     }).compile();
 
-    service = module.get<ProvidersService>(ProvidersService);
+    prisma = module.get<PrismaService>(PrismaService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('should be defined', async () => {
+    expect({ prisma }).toBeDefined();
   });
+  it('should be defined', () => {
+    prisma.user.findMany = jest.fn().mockReturnValueOnce([
+      { id: 1, name: 'developer' },
+      { id: 2, name: 'developer' },
+      { id: 3, name: 'developer' },
+    ]);
+  });
+
+  const teste = prisma.appointments.findMany;
 });
