@@ -51,10 +51,12 @@ export class AppointmentsController {
     );
   }
 
-  @Get()
+  @Get('/client')
   @ApiOperation({ summary: 'Find appointments' })
-  async findAll() {
-    return await this.appointmentsService.findAll();
+  async findAllClientAppointments(@CurrentUser() currentUser: User) {
+    return await this.appointmentsService.findAllClientAppointments(
+      currentUser,
+    );
   }
 
   @ApiOperation({ summary: 'Find appointment' })

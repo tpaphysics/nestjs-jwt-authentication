@@ -53,8 +53,13 @@ export class AppointmentsService {
     }
   }
 
-  async findAll() {
-    return await this.prisma.appointments.findMany();
+  async findAllClientAppointments(curentUser: User) {
+    const { id } = curentUser;
+    return await this.prisma.appointments.findMany({
+      where: {
+        client_id: id,
+      },
+    });
   }
 
   async findOne(id: string) {
