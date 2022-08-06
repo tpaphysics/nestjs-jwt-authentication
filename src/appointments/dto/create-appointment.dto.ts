@@ -1,7 +1,7 @@
 import faker from '@faker-js/faker';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsDate, isUUID, MinDate } from 'class-validator';
+import { IsDate, IsUUID, isUUID, MinDate } from 'class-validator';
 import { CheckInDataBase } from 'src/decorators/check-in-database.decorator';
 
 import { IsValidAppointmentTimes } from '../decorators/is-valid-appointment-times.decorator';
@@ -18,7 +18,7 @@ export class CreateAppointmentDto {
   })
   date: Date;
   @ApiProperty({ default: faker.datatype.uuid() })
-  @CheckInDataBase({
+  /*@CheckInDataBase({
     model: 'user',
     field: 'id',
     validators: [
@@ -27,6 +27,7 @@ export class CreateAppointmentDto {
         message: 'Field is not valid UUID!',
       },
     ],
-  })
+  })*/
+  @IsUUID()
   provider_id: string;
 }

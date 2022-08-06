@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
-import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -10,7 +9,7 @@ import { JwtAuthGuard } from './auth/gards/jwt-auth.guard';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { MailModule } from './mail/mail.module';
 import { CheckInDataBaseConstraint } from './decorators/check-in-database.decorator';
-import { ProvidersModule } from './providers/providers.module';
+import { AppointmentsService } from './appointments/appointments.service';
 
 @Module({
   imports: [
@@ -22,10 +21,9 @@ import { ProvidersModule } from './providers/providers.module';
     }),
     AppointmentsModule,
     MailModule,
-    ProvidersModule,
   ],
   providers: [
-    PrismaService,
+    AppointmentsService,
     CheckInDataBaseConstraint,
     {
       provide: APP_GUARD,

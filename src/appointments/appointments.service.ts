@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { ListProviderMonthAvailabilityDto } from './dto/list-provider-month-availability.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { format, getDate, getDaysInMonth, getHours } from 'date-fns';
 
-import { User } from 'src/users/entities/user.entity';
 import { Appointment } from './entities/appointment.entity';
 import { ListProviderDayAvailabilityDto } from './dto/list-provider-day-availability.dto';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class AppointmentsService {
@@ -39,12 +39,18 @@ export class AppointmentsService {
       throw new BadRequestException('This time is not available!');
     }
 
-    return await this.prisma.appointments.create({
-      data: {
-        ...data,
-        client_id: id,
-      },
-    });
+    try {
+      return await this.prisma.appointments.create({
+        data: {
+          ...data,
+          client_id: id,
+        },
+      });
+    } catch (error) {
+      if (error.code === 'P2003') {
+        throw new BadRequestException('The client does not exist!');
+      }
+    }
   }
 
   async findAll() {

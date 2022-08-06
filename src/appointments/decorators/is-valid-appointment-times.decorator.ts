@@ -5,7 +5,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { getHours } from 'date-fns';
+import { getHours, getMinutes, getSeconds } from 'date-fns';
 
 interface Props {
   startTimeOfWorkHour: number;
@@ -27,7 +27,7 @@ export function IsValidAppointmentTimes(
   };
 }
 
-@ValidatorConstraint({ name: 'IsValidAppointmentTimes' })
+@ValidatorConstraint({ name: 'isValidAppointmentTimes' })
 export class IsValidAppointmentTimesConstraint
   implements ValidatorConstraintInterface
 {
@@ -38,7 +38,9 @@ export class IsValidAppointmentTimesConstraint
     const isValidOpeningHours =
       getHours(value) >= startTimeOfWorkHour &&
       getHours(value) !== lunchHour &&
-      getHours(value) <= endTimeOfWorkHour;
+      getHours(value) <= endTimeOfWorkHour &&
+      getMinutes(value) === 0 &&
+      getSeconds(value) === 0;
 
     return isValidOpeningHours;
   }

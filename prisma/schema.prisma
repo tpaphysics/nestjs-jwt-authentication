@@ -31,6 +31,6 @@ model appointments {
   created_at  DateTime @default(now()) @db.Timestamptz(3)
   updated_at  DateTime @updatedAt @db.Timestamptz(3)
   provider_id String
-  client      user     @relation("client", fields: [client_id], references: [id])
+  client      user     @relation("client", fields: [client_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   client_id   String
 }

@@ -3,13 +3,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from '../users/users.module';
 import { LocalStrategy } from './estrategies/local.strategy';
 import { JwtStrategy } from './estrategies/jwt.strategy';
 import { LoginValidationMiddleware } from './middlewares/login-validation.middleware';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { UsersService } from 'src/users/users.service';
-import { MailService } from 'src/mail/mail.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { UsersService } from '../users/users.service';
+import { MailService } from '../mail/mail.service';
 
 @Module({
   imports: [

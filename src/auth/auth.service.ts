@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { MailService } from 'src/mail/mail.service';
-import { User } from 'src/users/entities/user.entity';
-import { UsersService } from 'src/users/users.service';
+import { MailService } from '../mail/mail.service';
+import { User } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
 import { UnauthorizedError } from './errors/unauthorized.error';
 
 import { UserPayload } from './models/UserPayload';

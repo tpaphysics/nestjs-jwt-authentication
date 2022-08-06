@@ -15,7 +15,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { findAllUserDto } from './dto/findAll-user.dto';
-import { IsPublicRoute } from 'src/auth/decorators/is-public-route.decorator';
 import { User } from './entities/user.entity';
 
 import {
@@ -28,7 +27,8 @@ import {
 } from '@nestjs/swagger';
 import FindAllUserResponse from './entities/find-all-users-response.entity';
 import { UpdateUserWithThumbnailDto } from './dto/upload-image-user.dto';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { IsPublicRoute } from '../auth/decorators/is-public-route.decorator';
 
 @Controller('users')
 @ApiTags('CRUD')

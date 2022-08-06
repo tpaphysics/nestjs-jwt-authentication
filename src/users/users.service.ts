@@ -3,15 +3,17 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotAcceptableException,
   Query,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { findAllUserDto } from './dto/findAll-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import * as bycrypt from 'bcrypt';
 import FindAllUserResponse from './entities/find-all-users-response.entity';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -22,18 +24,23 @@ export class UsersService {
 
     const hash = await bycrypt.hash(password, 10);
 
-    if (!hash) {
-      throw new InternalServerErrorException('Problem saving password!');
-    }
     try {
       return await this.prisma.user.create({
         data: {
           ...data,
-          password: await hash,
+          password: hash,
         },
       });
-    } catch {
-      throw new BadRequestException('User not availability!');
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        // The .code property can be accessed in a type-safe manner
+        if (error.code === 'P2002') {
+          throw new NotAcceptableException(
+            'A new user cannot be created with this email',
+          );
+        }
+      }
+      throw error;
     }
   }
 
