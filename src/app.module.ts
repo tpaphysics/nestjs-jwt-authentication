@@ -10,6 +10,7 @@ import { AppointmentsModule } from './appointments/appointments.module';
 import { MailModule } from './mail/mail.module';
 import { CheckInDataBaseConstraint } from './decorators/check-in-database.decorator';
 import { AppointmentsService } from './appointments/appointments.service';
+import { TesteModule } from './teste/teste.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AppointmentsService } from './appointments/appointments.service';
     }),
     AppointmentsModule,
     MailModule,
+    TesteModule,
   ],
   providers: [
     AppointmentsService,
