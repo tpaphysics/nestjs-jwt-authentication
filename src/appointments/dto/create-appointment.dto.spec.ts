@@ -190,4 +190,25 @@ describe('AppointmentsService', () => {
     expect(final.length).toBe(1);
     expect(service).toBeDefined();
   });
+
+  it('Deve retornar erro se o agendamento for no domingo', async () => {
+    const myAppointement = {
+      date: new Date(2022, 7, 7, 13, 0, 0),
+      provider_id: randomUUID(),
+    };
+
+    const myAppointementDto = plainToInstance(
+      CreateAppointmentDto,
+      myAppointement,
+    );
+    const errors = await validate(myAppointementDto);
+    console.log(errors);
+    const final = errors.filter(
+      (obj) =>
+        obj.property === 'date' &&
+        JSON.stringify(obj.constraints).includes('isValidAppointmentTimes'),
+    );
+    expect(final.length).toBe(1);
+    expect(service).toBeDefined();
+  });
 });

@@ -5,7 +5,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { getHours, getMinutes, getSeconds } from 'date-fns';
+import { getDay, getHours, getMinutes, getSeconds } from 'date-fns';
 
 interface Props {
   startTimeOfWorkHour: number;
@@ -40,11 +40,12 @@ export class IsValidAppointmentTimesConstraint
       getHours(value) !== lunchHour &&
       getHours(value) <= endTimeOfWorkHour &&
       getMinutes(value) === 0 &&
-      getSeconds(value) === 0;
+      getSeconds(value) === 0 &&
+      getDay(value) !== 0; // sunday not open
 
     return isValidOpeningHours;
   }
   defaultMessage(args: ValidationArguments) {
-    return 'Opening hours are 8am to 11am and 1pm to 8pm!';
+    return 'Opening hours are 8am to 11am and 1pm to 8pm. Not open sunday!';
   }
 }

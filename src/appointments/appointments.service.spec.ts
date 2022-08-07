@@ -111,7 +111,7 @@ describe('Create', () => {
   });
 });
 
-describe('FindAllMyApointments', () => {
+describe('FindAllClientApointments', () => {
   let service: AppointmentsService;
   let prisma: PrismaService;
   let provider: User;

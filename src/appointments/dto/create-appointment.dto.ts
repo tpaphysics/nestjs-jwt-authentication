@@ -18,16 +18,6 @@ export class CreateAppointmentDto {
   })
   date: Date;
   @ApiProperty({ default: faker.datatype.uuid() })
-  /*@CheckInDataBase({
-    model: 'user',
-    field: 'id',
-    validators: [
-      {
-        validationCallback: isUUID,
-        message: 'Field is not valid UUID!',
-      },
-    ],
-  })*/
   @IsUUID()
   provider_id: string;
 }
