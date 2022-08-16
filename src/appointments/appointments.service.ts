@@ -39,12 +39,18 @@ export class AppointmentsService {
       throw new BadRequestException('This time is not available!');
     }
 
-    return await this.prisma.appointments.create({
-      data: {
-        ...data,
-        client_id: id,
-      },
-    });
+    try {
+      return await this.prisma.appointments.create({
+        data: {
+          ...data,
+          client_id: id,
+        },
+      });
+    } catch (error) {
+      if (error.code === 'P2003') {
+        throw new BadRequestException('The client does not exist!');
+      }
+    }
   }
 
   async findAll(curentUser: User) {

@@ -1,5 +1,16 @@
 import { INestApplication } from '@nestjs/common';
-import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+import {
+  OpenAPIObject,
+  SwaggerCustomOptions,
+  SwaggerModule,
+} from '@nestjs/swagger';
+
+const customOptions: SwaggerCustomOptions = {
+  swaggerOptions: {
+    persistAuthorization: true,
+  },
+  customSiteTitle: 'API Urban Shaves Docs',
+};
 
 export function generateDocs(
   options: Omit<OpenAPIObject, 'paths'>,
@@ -10,5 +21,5 @@ export function generateDocs(
   const Document = SwaggerModule.createDocument(app, options, {
     include: [...module],
   });
-  SwaggerModule.setup(`api/${route}`, app, Document);
+  SwaggerModule.setup(`api/${route}`, app, Document, customOptions);
 }
