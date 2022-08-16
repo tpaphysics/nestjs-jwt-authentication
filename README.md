@@ -27,11 +27,8 @@ O API <strong>Urban Shaves</strong> está sendo desenvolvida com framework [Nest
 # Instalação das dependências
 $ yarn
 
-# Iniciar container com banco de dados postgress
+# Iniciar container com postgres e migration
 $ yarn up:db
-
-# Migrate
-$ yarn prisma migrate dev
 
 # Para remover o container com o postgres
 $ yarn rm:db
@@ -66,12 +63,13 @@ export class UsersController {
 ## Documentalçao com Swagger
 
 ```text
-http://localhost:3000/api/appointments
-http://localhost:3000/api/users
 http://localhost:3000/api/login
+http://localhost:3000/api/users
+http://localhost:3000/api/appointments
+http://localhost:3000/api/providers
 ```
 
-<image width="360px" src="./.readme/login-swagger.png"/>
+<image width="260px" src="./.readme/users-swagger.png"/>
 
 ## Prisma Studio
 
@@ -89,26 +87,20 @@ Eles simulam melhor o ambiente real para testar os casos de uso. Para isso criam
 DATABASE_URL="postgresql://dbase:dbase@localhost:5432/test?schema=public"
 ```
 
-Na criação do banco de dados ocorrem os seguintes passos:
+Ao digitar o comando `yarn up:db`, ocoorem os sguintes passos:
 
 - [x] Criação do container com o banco de dados postgres com docker-compose
 - [x] Criação da tabela de desenvolvimento e execução migration de desenvolvimento.
 - [x] Criação da tabela test com e execução da migration de teste
 
-Basta digitar:
-
-```
-yarn up:db
-```
-
-Para execução dos testes:
+Para execução dos testes de integração:
 
 ```bash
 yarn test:watch -- nome_do_arquivo_de_teste
 ```
 
-com isso os testes são realizados em um database de teste, diferente do database de desenvolvimento.
-O banco de teste é resetado no inicio do teste, ao final.
+Com isso os testes são realizados em um database de próprio de teste.
+O banco de teste é resetado no inicio do teste ao final de cada teste.
 
 ```typescript
 afterAll(async () => {
