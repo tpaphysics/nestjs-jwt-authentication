@@ -19,7 +19,7 @@
 
 ## Descrição
 
-O API <strong>Urban Shaves</strong> criada para integração entre os apps [Urban Shaves web](https://github.com/tpaphysics/react-urban-shaves-web) e [Urban Shaves mobile](https://github.com/tpaphysics/react-native-urban-shaves-mobile) está sendo desenvolvida em [NestJs](https://nestjs.com/). Possui fluxo de autenticação JWT, como ORM utilizamos o [Prisma](https://www.prisma.io/) e para documentação o [Swagger](https://swagger.io/). Utilizamos o banco de dados postgres através do [Docker Compose](https://docs.docker.com/compose/).
+O API <strong>Urban Shaves</strong> está sendo desenvolvida com framework [Nestjs](https://nestjs.com/) para integração entre os apps [Urban Shaves web](https://github.com/tpaphysics/react-urban-shaves-web) e [Urban Shaves mobile](https://github.com/tpaphysics/react-native-urban-shaves-mobile). Possui fluxo de autenticação JWT, utilizamos como ORM o [Prisma](https://www.prisma.io/), para documentação o [Swagger](https://swagger.io/), o [PostgresQl](https://www.postgresql.org/) como banco de dados.
 
 ## Instalação
 
@@ -27,11 +27,14 @@ O API <strong>Urban Shaves</strong> criada para integração entre os apps [Urba
 # Instalação das dependências
 $ yarn
 
-# Iniciar container com banco de dados postgress (Você precisa ter o docker instalado!):
+# Iniciar container com banco de dados postgress
 $ yarn up:db
 
-# Migração dos models definidos no schema.prisma para o banco de dados
+# Migrate
 $ yarn prisma migrate dev
+
+# Para remover o container com o postgres
+$ yarn rm:db
 ```
 
 ## Iniciando o servidor
@@ -43,12 +46,6 @@ $ yarn start
 # watch mode
 $ yarn start:dev
 
-```
-
-Para remover o container com o postgres:
-
-```bash
-$ yarn rm:db
 ```
 
 ## Observação
@@ -66,7 +63,7 @@ export class UsersController {
 }
 ```
 
-## Documentalçao com swagger
+## Documentalçao com Swagger
 
 ```text
 http://localhost:3000/api/appointments
@@ -76,29 +73,7 @@ http://localhost:3000/api/login
 
 <image width="360px" src="./.readme/login-swagger.png"/>
 
-Efetue login copie o access_token gerado:
-
-```json
-{
-  "user": {
-    "id": "0a177967-4161-4ad8-8c6d-02b8b22deaee",
-    "email": "urban@shaves.com",
-    "name": "urban",
-    "avatarFileName": null,
-    "created_at": 1651823528429,
-    "updated_at": 1651823528429
-  },
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ZmNiZTI4NS03Y2QzLTQxZjItOGQ4YS1kNWFhMDA3MWE3MDQiLCJlbWFpbCI6InRlc3RlQHRlc3RlLmNvbSIsIm5hbWUiOiJ0ZXN0ZSIsImlhdCI6MTY1MTAwOTYzMywiZXhwIjoxNjUzNjAxNjMzfQ.9D_7gjQ96aRYYahZVZQqQLgEpD699YOkhKozy6EYgsA"
-}
-```
-
-E cole no campo Authorize:
-
-<image width="360px" src="./.readme/authorize.example.png"/>
-
 ## Prisma Studio
-
-Para gravar e apagar dados manualmente no banco de dados, utilize o prisma studio:
 
 ```bash
 yarn prisma studio
