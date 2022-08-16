@@ -1,5 +1,5 @@
 import { IsNumber, IsUUID, Max, Min } from 'class-validator';
-import { getMonth, getYear } from 'date-fns';
+import { getYear } from 'date-fns';
 
 export class ListProviderDayAvailabilityDto {
   @IsUUID()

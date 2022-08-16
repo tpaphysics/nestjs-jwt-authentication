@@ -1,12 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from './user.entity';
-
-type UserNotPassword = Omit<User, 'password'>;
+import { UserNotPassword } from './user-not-password.type';
 
 export default class FindAllUserResponse {
   @ApiProperty({
     type: Object,
-    default: {
+    example: {
       page: 1,
       totalPages: 2,
     },
@@ -15,6 +13,6 @@ export default class FindAllUserResponse {
     page: number;
     totalPages: number;
   };
-  @ApiProperty({ type: () => [User] })
+  @ApiProperty({ type: () => [UserNotPassword] })
   users: UserNotPassword[];
 }

@@ -1,12 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { ListProviderMonthAvailabilityDto } from './dto/list-provider-month-availability.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
-import { format, getDate, getDaysInMonth, getHours } from 'date-fns';
+import { format, getHours } from 'date-fns';
 
 import { Appointment } from './entities/appointment.entity';
-import { ListProviderDayAvailabilityDto } from './dto/list-provider-day-availability.dto';
 import { User } from '../users/entities/user.entity';
 
 @Injectable()
@@ -85,45 +83,5 @@ export class AppointmentsService {
         id,
       },
     });
-  }
-
-  async listProviderDayAvailability(
-    listProviderDayAvailabilityDto: ListProviderDayAvailabilityDto,
-  ): Promise<any> {
-    const { day, month, year, provider_id } = listProviderDayAvailabilityDto;
-
-    const parsedDay = String(day).padStart(2, '0');
-    const parsedMonth = String(month).padStart(2, '0');
-    const checkDayAvailability = `${parsedDay}-${parsedMonth}-${year}`;
-
-    const appointments = await this.prisma.$queryRaw<Appointment[]>`
-    SELECT * FROM 
-    appointments 
-    WHERE 
-    provider_id=${provider_id}
-    AND
-    to_char(date,'DD-MM-YYYY')=${checkDayAvailability}
-    `;
-
-    const numberOfAppointmentsInDay = 12; // 08h00 at 21h00
-    const startWork = 8;
-    const finalWork = 21;
-    const numberOfHoursArray = Array.from(
-      {
-        length: numberOfAppointmentsInDay,
-      },
-      (_, index) =>
-        index + startWork >= 12 ? index + 1 + startWork : index + startWork,
-    );
-    const availability = numberOfHoursArray.map((hour) => {
-      const appointmentsInHour = appointments.find((appointment) => {
-        return getHours(new Date(appointment.date)) === hour;
-      });
-      return {
-        hour,
-        availability: !appointmentsInHour,
-      };
-    });
-    return availability;
   }
 }

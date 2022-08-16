@@ -25,10 +25,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import FindAllUserResponse from './entities/find-all-users-response.entity';
+import FindAllUserResponse from './model/find-all-users-response.type';
 import { UpdateUserWithThumbnailDto } from './dto/upload-image-user.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { IsPublicRoute } from '../auth/decorators/is-public-route.decorator';
+import { UserNotPassword } from './model/user-not-password.type';
 
 @Controller('users')
 @ApiTags('users')
@@ -50,11 +51,11 @@ export class UsersController {
 
   @Get()
   @ApiOperation({ summary: 'Find users' })
-  //@ApiResponse({
-  //  status: 200,
-  //  description: 'The found users',
-  //  type: FindAllUserResponse,
-  //})
+  @ApiResponse({
+    status: 200,
+    description: 'The find all users',
+    type: FindAllUserResponse,
+  })
   async findAll(@Query() query: findAllUserDto): Promise<any> {
     return await this.usersService.findAll(query);
   }
@@ -67,6 +68,11 @@ export class UsersController {
     description: 'ThubnailUser',
     type: UpdateUserWithThumbnailDto,
   })
+  @ApiResponse({
+    status: 200,
+    description: 'Update one user',
+    type: UserNotPassword,
+  })
   async update(
     @UploadedFile() file: Express.Multer.File,
     @Param('id') id: string,
@@ -77,28 +83,32 @@ export class UsersController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete user' })
+  @ApiResponse({
+    status: 200,
+    description: 'delete one user',
+    type: UserNotPassword,
+  })
   async remove(@Param('id') id: string): Promise<User> {
     return this.usersService.remove(id);
   }
 
-  @Get('month')
-  async findAllProvidersExceptCurrentUser(
-    @Query() query: findAllUserDto,
-    @CurrentUser() user: User,
-  ): Promise<FindAllUserResponse> {
-    console.log(user);
-    return await this.usersService.findAllProvidersExceptCurrentUser(
-      query,
-      user,
-    );
-  }
   @Get('me')
-  @ApiOperation({ summary: 'Find user' })
+  @ApiOperation({ summary: 'Current user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Show current user',
+    type: UserNotPassword,
+  })
   async curentUser(@CurrentUser() user: User): Promise<User> {
     return await user;
   }
 
   @Get(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'Find one user',
+    type: UserNotPassword,
+  })
   @ApiOperation({ summary: 'Find user' })
   async findOne(@Param('id') id: string): Promise<User> {
     return this.usersService.findOne(id);

@@ -170,3 +170,7 @@ describe('ListProviderMonthAvailability', () => {
     await prisma.$disconnect();
   });
 });
+
+describe('ListProviderDayAvailability', () => {
+  return;
+});

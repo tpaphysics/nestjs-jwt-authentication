@@ -12,7 +12,6 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { ListProviderDayAvailabilityDto } from './dto/list-provider-day-availability.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { Appointment } from './entities/appointment.entity';
 
@@ -31,15 +30,6 @@ export class AppointmentsController {
     return await this.appointmentsService.create(
       createAppointmentDto,
       currentUser,
-    );
-  }
-
-  @Post('day')
-  async listProviderDayAvailability(
-    @Body() listProviderDayAvailabilityDto: ListProviderDayAvailabilityDto,
-  ): Promise<any> {
-    return await this.appointmentsService.listProviderDayAvailability(
-      listProviderDayAvailabilityDto,
     );
   }
 

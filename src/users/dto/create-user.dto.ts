@@ -3,12 +3,12 @@ import { faker } from '@faker-js/faker';
 import { IsString } from 'class-validator';
 
 export class CreateUserDto {
-  @ApiProperty({ default: faker.internet.email().toLocaleLowerCase() })
+  @ApiProperty({ example: 'urban@shaves.com' })
   @IsString()
   //@IsEmail()
   email: string;
 
-  @ApiProperty({ default: faker.internet.userName().toLocaleLowerCase() })
+  @ApiProperty({ example: 'urban' })
   @IsString()
   //@Matches(/[a-zA-Z0-9_-]{2,20}/)
   name: string;
@@ -19,6 +19,6 @@ export class CreateUserDto {
   //@Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
   // message: 'Password too weak!',
   //})
-  @ApiProperty({ default: 'password' })
+  @ApiProperty({ default: 'myPassword' })
   password: string;
 }

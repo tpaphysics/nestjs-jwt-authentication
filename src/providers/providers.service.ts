@@ -1,22 +1,29 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { getDaysInMonth, getDate, isAfter, isEqual } from 'date-fns';
+import { BadRequestException, Injectable, Query } from '@nestjs/common';
+import { getDaysInMonth, getDate, isAfter, isEqual, getHours } from 'date-fns';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ListProviderMonthAvailabilityParamDto } from './dto/list-provider-month-availability.param.dto';
-import { ListProviderMonthAvailabilityQueryDto } from './dto/list-provider-month-availability.query.dto';
+import { findAllUserDto } from '../users/dto/findAll-user.dto';
+import { User } from '../users/entities/user.entity';
+import FindAllUserResponse from '../users/model/find-all-users-response.type';
+import { UsersService } from '../users/users.service';
+import { ProviderIdParamDto } from './dto/list-provider-month-availability.param.dto';
+import { ProviderMonthAvailabilityQueryDto } from './dto/list-provider-month-availability.query.dto';
+import { ListProviderDayAvailabilityDto } from './dto/provider-day-availability.query.dto';
 import { ListProviderMonthAvailabilityResponse } from './models/list-provider-month-availability.type';
 
 @Injectable()
 export class ProvidersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly usersService: UsersService,
+  ) {}
 
   async listProviderMonthAvailability(
-    param: ListProviderMonthAvailabilityParamDto,
-    query: ListProviderMonthAvailabilityQueryDto,
+    param: ProviderIdParamDto,
+    query: ProviderMonthAvailabilityQueryDto,
   ): Promise<ListProviderMonthAvailabilityResponse[]> {
     const { provider_id } = param;
     const { month, year } = query;
-    console.log(query);
 
     if (
       year < new Date().getFullYear() ||
@@ -79,5 +86,54 @@ export class ProvidersService {
       };
     });
     return availability;
+  }
+
+  async listProviderDayAvailability(
+    param: ProviderIdParamDto,
+    query: ListProviderDayAvailabilityDto,
+  ) {
+    const { provider_id } = param;
+    const { day, month, year } = query;
+
+    const parsedDay = String(day).padStart(2, '0');
+    const parsedMonth = String(month).padStart(2, '0');
+    const checkDayAvailability = `${parsedDay}-${parsedMonth}-${year}`;
+
+    const appointments = await this.prisma.$queryRaw<Appointment[]>`
+    SELECT * FROM 
+    appointments 
+    WHERE 
+    provider_id=${provider_id}
+    AND
+    to_char(date,'DD-MM-YYYY')=${checkDayAvailability}
+    `;
+
+    const numberOfAppointmentsInDay = 12; // 08h00 at 21h00
+    const startWork = 8;
+    const finalWork = 21;
+    const numberOfHoursArray = Array.from(
+      {
+        length: numberOfAppointmentsInDay,
+      },
+      (_, index) =>
+        index + startWork >= 12 ? index + 1 + startWork : index + startWork,
+    );
+    const availability = numberOfHoursArray.map((hour) => {
+      const appointmentsInHour = appointments.find((appointment) => {
+        return getHours(new Date(appointment.date)) === hour;
+      });
+      return {
+        hour,
+        availability: !appointmentsInHour,
+      };
+    });
+    return availability;
+  }
+
+  async findAllProvidersExceptCurrentUser(
+    @Query() query: findAllUserDto,
+    curentUser: User,
+  ): Promise<FindAllUserResponse> {
+    return await this.usersService.findAll(query, curentUser);
   }
 }

@@ -12,7 +12,7 @@ import { findAllUserDto } from './dto/findAll-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import * as bycrypt from 'bcrypt';
-import FindAllUserResponse from './entities/find-all-users-response.entity';
+import FindAllUserResponse from './model/find-all-users-response.type';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -145,25 +145,6 @@ export class UsersService {
     id: string,
     data: UpdateUserDto,
   ): Promise<User> {
-    /*
-    const { id: currentUserId } = user;
-    if (currentUserId !== id) {
-      throw new BadRequestException(
-        'The operation cannot be performed. Lamer!',
-      );
-    }*/
-    /*
-    const { password } = data;
-
-    if (password) {
-      const hash = await bycrypt.hash(password, 10);
-
-      if (!hash) {
-        throw new InternalServerErrorException('Problem saving password!');
-      }
-      data['password'] = hash;
-    } */
-
     return await this.prisma.user.update({
       where: {
         id,
@@ -191,11 +172,5 @@ export class UsersService {
         id,
       },
     });
-  }
-  async findAllProvidersExceptCurrentUser(
-    @Query() query: findAllUserDto,
-    curentUser: User,
-  ): Promise<FindAllUserResponse> {
-    return await this.findAll(query, curentUser);
   }
 }
