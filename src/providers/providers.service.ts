@@ -1,16 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import {
-  getDaysInMonth,
-  getDate,
-  isAfter,
-  isBefore,
-  isEqual,
-  getDay,
-} from 'date-fns';
+import { getDaysInMonth, getDate, isAfter, isEqual } from 'date-fns';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ListProviderMonthAvailabilityParamDto } from './dto/list-provider-month-availability.param.dto';
 import { ListProviderMonthAvailabilityQueryDto } from './dto/list-provider-month-availability.query.dto';
+import { ListProviderMonthAvailabilityResponse } from './models/list-provider-month-availability.type';
 
 @Injectable()
 export class ProvidersService {
@@ -19,7 +13,7 @@ export class ProvidersService {
   async listProviderMonthAvailability(
     param: ListProviderMonthAvailabilityParamDto,
     query: ListProviderMonthAvailabilityQueryDto,
-  ): Promise<any> {
+  ): Promise<ListProviderMonthAvailabilityResponse[]> {
     const { provider_id } = param;
     const { month, year } = query;
     console.log(query);

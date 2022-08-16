@@ -31,7 +31,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { IsPublicRoute } from '../auth/decorators/is-public-route.decorator';
 
 @Controller('users')
-@ApiTags('CRUD')
+@ApiTags('users')
 @ApiBearerAuth()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -81,7 +81,7 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
-  @Get('providers')
+  @Get('month')
   async findAllProvidersExceptCurrentUser(
     @Query() query: findAllUserDto,
     @CurrentUser() user: User,

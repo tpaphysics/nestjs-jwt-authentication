@@ -4,12 +4,12 @@ import { Min, Max } from 'class-validator';
 import { getYear } from 'date-fns';
 
 export class ListProviderMonthAvailabilityQueryDto {
-  @ApiProperty()
+  @ApiProperty({ example: 2 })
   @Type(() => Number)
   @Min(1)
   @Max(12)
   month: number;
-  @ApiProperty()
+  @ApiProperty({ example: new Date().getFullYear() })
   @Type(() => Number)
   @Max(getYear(new Date()))
   year: number;

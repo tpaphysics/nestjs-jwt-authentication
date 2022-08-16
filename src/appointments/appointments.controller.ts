@@ -13,13 +13,12 @@ import { User } from '../users/entities/user.entity';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { ListProviderDayAvailabilityDto } from './dto/list-provider-day-availability.dto';
-import { ListProviderMonthAvailabilityDto } from './dto/list-provider-month-availability.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { Appointment } from './entities/appointment.entity';
 
-@ApiTags('CRUD')
-@ApiBearerAuth()
 @Controller('appointments')
+@ApiTags('appointments')
+@ApiBearerAuth()
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
@@ -34,15 +33,8 @@ export class AppointmentsController {
       currentUser,
     );
   }
-  @Post('provider/month')
-  async listProviderMonthAvailability(
-    @Body() listProviderMonthAvailabilityDto: ListProviderMonthAvailabilityDto,
-  ): Promise<any> {
-    return await this.appointmentsService.listProviderMonthAvailability(
-      listProviderMonthAvailabilityDto,
-    );
-  }
-  @Post('provider/day')
+
+  @Post('day')
   async listProviderDayAvailability(
     @Body() listProviderDayAvailabilityDto: ListProviderDayAvailabilityDto,
   ): Promise<any> {
@@ -51,12 +43,10 @@ export class AppointmentsController {
     );
   }
 
-  @Get('/client')
+  @Get()
   @ApiOperation({ summary: 'Find appointments' })
-  async findAllClientAppointments(@CurrentUser() currentUser: User) {
-    return await this.appointmentsService.findAllClientAppointments(
-      currentUser,
-    );
+  async findAll(@CurrentUser() currentUser: User) {
+    return await this.appointmentsService.findAll(currentUser);
   }
 
   @ApiOperation({ summary: 'Find appointment' })

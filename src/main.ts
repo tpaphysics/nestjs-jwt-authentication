@@ -5,6 +5,7 @@ import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { AuthModule } from './auth/auth.module';
+import { ProvidersModule } from './providers/providers.module';
 import { generateDocs } from './swagger/swagger';
 import { UsersModule } from './users/users.module';
 
@@ -45,6 +46,18 @@ async function bootstrap() {
 
   generateDocs(
     new DocumentBuilder()
+      .setTitle('Providers')
+      .setDescription('The providers API description')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build(),
+    'providers',
+    app,
+    [ProvidersModule],
+  );
+
+  generateDocs(
+    new DocumentBuilder()
       .setTitle('Appointments')
       .setDescription('The appointments API description')
       .setVersion('1.0')
@@ -54,6 +67,7 @@ async function bootstrap() {
     app,
     [AppointmentsModule],
   );
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.listen(3000);

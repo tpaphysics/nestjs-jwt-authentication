@@ -1,7 +1,9 @@
-import { IsUUID, isUUID } from 'class-validator';
-import { CheckInDataBase } from 'src/decorators/check-in-database.decorator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsUUID } from 'class-validator';
+import { randomUUID } from 'crypto';
 
 export class ListProviderMonthAvailabilityParamDto {
+  @ApiProperty({ example: randomUUID() })
   @IsUUID()
   provider_id: string;
 }

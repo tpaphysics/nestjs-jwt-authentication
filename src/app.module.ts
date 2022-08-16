@@ -10,6 +10,7 @@ import { AppointmentsModule } from './appointments/appointments.module';
 import { MailModule } from './mail/mail.module';
 import { CheckInDataBaseConstraint } from './decorators/check-in-database.decorator';
 import { AppointmentsService } from './appointments/appointments.service';
+import { ProvidersModule } from './providers/providers.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AppointmentsService } from './appointments/appointments.service';
       rootPath: join(__dirname, '..', 'upload'),
     }),
     AppointmentsModule,
+    ProvidersModule,
     MailModule,
   ],
   providers: [

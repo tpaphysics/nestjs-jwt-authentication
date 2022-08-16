@@ -39,21 +39,15 @@ export class AppointmentsService {
       throw new BadRequestException('This time is not available!');
     }
 
-    try {
-      return await this.prisma.appointments.create({
-        data: {
-          ...data,
-          client_id: id,
-        },
-      });
-    } catch (error) {
-      if (error.code === 'P2003') {
-        throw new BadRequestException('The client does not exist!');
-      }
-    }
+    return await this.prisma.appointments.create({
+      data: {
+        ...data,
+        client_id: id,
+      },
+    });
   }
 
-  async findAllClientAppointments(curentUser: User) {
+  async findAll(curentUser: User) {
     const { id } = curentUser;
     return await this.prisma.appointments.findMany({
       where: {
@@ -86,39 +80,7 @@ export class AppointmentsService {
       },
     });
   }
-  async listProviderMonthAvailability(
-    listProviderMonthAvailabilityDto: ListProviderMonthAvailabilityDto,
-  ): Promise<any> {
-    const { year, month, provider_id } = listProviderMonthAvailabilityDto;
-    const parsedMonth = String(month).padStart(2, '0');
-    const checkMonthAvailability = `${parsedMonth}-${year}`;
 
-    const appointments = await this.prisma.$queryRaw<Appointment[]>`
-    SELECT * FROM 
-    appointments 
-    WHERE 
-    provider_id=${provider_id}
-    AND
-    to_char(date,'MM-YYYY')=${checkMonthAvailability}
-    `;
-    const numberOfDaysInMonth = getDaysInMonth(new Date(year, month - 1));
-
-    const numberOfDaysArray = Array.from(
-      { length: numberOfDaysInMonth },
-      (_, index) => index + 1,
-    );
-
-    const availability = numberOfDaysArray.map((day) => {
-      const appointmentsInDay = appointments.filter((appointment) => {
-        return getDate(new Date(appointment.date)) === day;
-      });
-      return {
-        day,
-        availability: appointmentsInDay.length < 12,
-      };
-    });
-    return availability;
-  }
   async listProviderDayAvailability(
     listProviderDayAvailabilityDto: ListProviderDayAvailabilityDto,
   ): Promise<any> {
