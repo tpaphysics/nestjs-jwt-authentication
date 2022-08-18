@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { isBefore } from 'date-fns';
 import { AppointmentsService } from '../appointments/appointments.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '../users/entities/user.entity';
