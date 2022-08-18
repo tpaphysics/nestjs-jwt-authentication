@@ -177,7 +177,7 @@ import { ProvidersService } from './providers.service';
 });
 */
 
-describe('ListProviderDayAvailability', () => {
+describe('ProviderDayAvailability', () => {
   let service: ProvidersService;
   let prisma: PrismaService;
   let provider: User;
@@ -242,15 +242,74 @@ describe('ListProviderDayAvailability', () => {
     expect(a.length).toBe(0);
   });
 
-  it('Na hora almoço não deve haver disponibilidade', async () => {
+  it('Não deve haver disponibilidade antes das 8h', async () => {
     const res = await service.listProviderDayAvailability(
       { provider_id: provider.id },
       { month: 12, day: 3, year: 2022 },
     );
     const a = res.filter((obj) => {
-      return obj.hour === 12;
+      return obj.hour < 7;
     });
     expect(a.length).toBe(0);
+  });
+
+  it('Não deve haver disponibilidade antes das 20h', async () => {
+    const res = await service.listProviderDayAvailability(
+      { provider_id: provider.id },
+      { month: 12, day: 3, year: 2022 },
+    );
+    const a = res.filter((obj) => {
+      return obj.hour > 20;
+    });
+    expect(a.length).toBe(0);
+  });
+
+  it('Deve gerar erro ao verificar disponibilidade de uma data passada', async () => {
+    const res = await service
+      .listProviderDayAvailability(
+        { provider_id: provider.id },
+        { month: 12, day: 3, year: 2021 },
+      )
+      .catch((err) => expect(err).toBeDefined());
+    expect(res).not.toBeDefined();
+  });
+
+  it('Se o agendamento é na data atual, horas que estão no passado devem estar com availability false', async () => {
+    await prisma.appointments.create({
+      data: {
+        date: new Date(
+          new Date().getFullYear(),
+          new Date().getMonth(),
+          new Date().getDate(),
+          20,
+          0,
+          0,
+        ),
+        provider_id: provider.id,
+        client_id: client.id,
+      },
+    }); // Agendamento para às 20h da data atual
+    const res = await service.listProviderDayAvailability(
+      { provider_id: provider.id },
+      {
+        month: new Date().getMonth() + 1,
+        day: new Date().getDate(),
+        year: new Date().getFullYear(),
+      }, //Data atual
+    );
+
+    const filter = res.filter((obj) => {
+      return obj.hour <= new Date().getHours();
+    });
+
+    const filter1 = filter.filter((obj) => {
+      return obj.availability === true;
+    });
+
+    expect(filter1.length).toBe(0);
+
+    // .catch((err) => expect(err).toBeDefined());
+    //expect(res).not.toBeDefined();
   });
 
   afterAll(async () => {

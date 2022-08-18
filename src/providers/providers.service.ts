@@ -1,5 +1,17 @@
-import { BadRequestException, Injectable, Query } from '@nestjs/common';
-import { getDaysInMonth, getDate, isAfter, isEqual, getHours } from 'date-fns';
+import {
+  BadRequestException,
+  Injectable,
+  NotAcceptableException,
+  Query,
+} from '@nestjs/common';
+import {
+  getDaysInMonth,
+  getDate,
+  isAfter,
+  isEqual,
+  getHours,
+  isBefore,
+} from 'date-fns';
 import { Appointment } from 'src/appointments/entities/appointment.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { findAllUserDto } from '../users/dto/findAll-user.dto';
@@ -95,6 +107,21 @@ export class ProvidersService {
     const { provider_id } = param;
     const { day, month, year } = query;
 
+    const date = new Date(year, month - 1, day);
+
+    const now = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+    );
+
+    const isPast = isBefore(date, now);
+    if (isPast) {
+      throw new NotAcceptableException(
+        'Não existe disponibilidade em datas passadas',
+      );
+    }
+
     const parsedDay = String(day).padStart(2, '0');
     const parsedMonth = String(month).padStart(2, '0');
     const checkDayAvailability = `${parsedDay}-${parsedMonth}-${year}`;
@@ -127,6 +154,16 @@ export class ProvidersService {
         availability: !appointmentsInHour,
       };
     });
+
+    if (isEqual(date, now)) {
+      availability.map((obj) => {
+        if (obj.hour <= new Date().getHours()) {
+          obj.availability = false;
+        }
+      });
+    }
+    console.log(availability);
+
     return availability;
   }
 
