@@ -3,11 +3,11 @@ import { isBefore } from 'date-fns';
 import { AppointmentsService } from '../appointments/appointments.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
 import { ProvidersService } from './providers.service';
 
-describe('ListProviderMonthAvailability', () => {
+/* describe('ListProviderMonthAvailability', () => {
   let service: ProvidersService;
-  let appointmentService: AppointmentsService;
   let prisma: PrismaService;
   let provider: User;
   let client: User;
@@ -26,9 +26,14 @@ describe('ListProviderMonthAvailability', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ProvidersService, PrismaService, AppointmentsService],
+      providers: [
+        ProvidersService,
+        PrismaService,
+        AppointmentsService,
+        UsersService,
+      ],
     }).compile();
-    appointmentService = module.get<AppointmentsService>(AppointmentsService);
+
     service = module.get<ProvidersService>(ProvidersService);
     prisma = module.get<PrismaService>(PrismaService);
 
@@ -170,7 +175,90 @@ describe('ListProviderMonthAvailability', () => {
     await prisma.$disconnect();
   });
 });
+*/
 
 describe('ListProviderDayAvailability', () => {
-  return;
+  let service: ProvidersService;
+  let prisma: PrismaService;
+  let provider: User;
+  let client: User;
+  const createClient = {
+    name: 'a',
+    email: 'a@a.com',
+    password: '1',
+  };
+  const createProvider = {
+    name: 'b',
+    email: 'b@b.com',
+    password: '1',
+  };
+
+  //beforeEach(async () => {});
+
+  beforeAll(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        ProvidersService,
+        PrismaService,
+        AppointmentsService,
+        UsersService,
+      ],
+    }).compile();
+
+    service = module.get<ProvidersService>(ProvidersService);
+    prisma = module.get<PrismaService>(PrismaService);
+
+    client = await prisma.user.create({ data: createClient });
+    provider = await prisma.user.create({ data: createProvider });
+    const app1 = await prisma.appointments.create({
+      data: {
+        date: new Date(2023, 10, 12, 13, 0, 0),
+        provider_id: provider.id,
+        client_id: client.id,
+      },
+    });
+    const app2 = await prisma.appointments.create({
+      data: {
+        date: new Date(2023, 10, 12, 14, 0, 0),
+        provider_id: provider.id,
+        client_id: client.id,
+      },
+    });
+    //console.log(app1, app2);
+  });
+
+  it('should be defined', async () => {
+    expect({ prisma, service, client, provider }).toBeDefined();
+  });
+
+  it('Na hora almoço não deve haver disponibilidade', async () => {
+    const res = await service.listProviderDayAvailability(
+      { provider_id: provider.id },
+      { month: 12, day: 3, year: 2022 },
+    );
+    const a = res.filter((obj) => {
+      return obj.hour === 12;
+    });
+    expect(a.length).toBe(0);
+  });
+
+  it('Na hora almoço não deve haver disponibilidade', async () => {
+    const res = await service.listProviderDayAvailability(
+      { provider_id: provider.id },
+      { month: 12, day: 3, year: 2022 },
+    );
+    const a = res.filter((obj) => {
+      return obj.hour === 12;
+    });
+    expect(a.length).toBe(0);
+  });
+
+  afterAll(async () => {
+    const deleteAppointments = prisma.appointments.deleteMany();
+    const deleteUsers = prisma.user.deleteMany();
+
+    await prisma.$transaction([deleteAppointments, deleteUsers]);
+
+    await prisma.$disconnect();
+  });
 });

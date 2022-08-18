@@ -8,7 +8,7 @@ import FindAllUserResponse from '../users/model/find-all-users-response.type';
 import { UsersService } from '../users/users.service';
 import { ProviderIdParamDto } from './dto/list-provider-month-availability.param.dto';
 import { ProviderMonthAvailabilityQueryDto } from './dto/list-provider-month-availability.query.dto';
-import { ListProviderDayAvailabilityDto } from './dto/provider-day-availability.query.dto';
+import { ProviderDayAvailabilityDto } from './dto/provider-day-availability.query.dto';
 import { ListProviderMonthAvailabilityResponse } from './models/list-provider-month-availability.type';
 
 @Injectable()
@@ -90,7 +90,7 @@ export class ProvidersService {
 
   async listProviderDayAvailability(
     param: ProviderIdParamDto,
-    query: ListProviderDayAvailabilityDto,
+    query: ProviderDayAvailabilityDto,
   ) {
     const { provider_id } = param;
     const { day, month, year } = query;

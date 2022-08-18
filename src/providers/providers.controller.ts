@@ -10,13 +10,12 @@ import {
 import { ListProviderMonthAvailabilityResponse } from './models/list-provider-month-availability.type';
 import { ProviderIdParamDto } from './dto/list-provider-month-availability.param.dto';
 import { ProviderMonthAvailabilityQueryDto } from './dto/list-provider-month-availability.query.dto';
-import { ListProviderDayAvailabilityDto } from './dto/provider-day-availability.query.dto';
 import { ListProviderDayAvailabilityResponse } from './models/list-provider-day-availability-type';
 import { findAllUserDto } from '../users/dto/findAll-user.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 import FindAllUserResponse from '../users/model/find-all-users-response.type';
-import { UsersService } from '../users/users.service';
+import { ProviderDayAvailabilityDto } from './dto/provider-day-availability.query.dto';
 
 @Controller('providers')
 @ApiTags('Providers')
@@ -66,7 +65,7 @@ export class ProvidersController {
   })
   async listProviderDayAvailability(
     @Param() param: ProviderIdParamDto,
-    @Query() query: ListProviderDayAvailabilityDto,
+    @Query() query: ProviderDayAvailabilityDto,
   ): Promise<any> {
     return await this.providersService.listProviderDayAvailability(
       param,

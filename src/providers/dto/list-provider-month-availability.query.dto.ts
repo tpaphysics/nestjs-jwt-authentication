@@ -6,11 +6,11 @@ import { getYear } from 'date-fns';
 export class ProviderMonthAvailabilityQueryDto {
   @ApiProperty({ example: 2 })
   @Type(() => Number)
-  @Min(1)
+  @Min(new Date().getMonth())
   @Max(12)
   month: number;
   @ApiProperty({ example: new Date().getFullYear() })
   @Type(() => Number)
-  @Max(getYear(new Date()))
+  @Min(getYear(new Date()))
   year: number;
 }

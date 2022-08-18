@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { Min, Max } from 'class-validator';
-import { getDaysInMonth, getYear } from 'date-fns';
+import { getYear } from 'date-fns';
 
-export class ListProviderDayAvailabilityDto {
+export class ProviderDayAvailabilityDto {
   @ApiProperty({ example: 16 })
   @Type(() => Number)
   @Min(1)
-  @Max(getDaysInMonth(new Date()))
+  @Max(31)
   day: number;
   @ApiProperty({ example: 2 })
   @Type(() => Number)
@@ -16,6 +16,6 @@ export class ListProviderDayAvailabilityDto {
   month: number;
   @ApiProperty({ example: new Date().getFullYear() })
   @Type(() => Number)
-  @Max(getYear(new Date()))
+  @Min(getYear(new Date()))
   year: number;
 }
