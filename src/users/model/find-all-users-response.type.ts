@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from '../entities/user.entity';
 import { UserNotPassword } from './user-not-password.type';
 
 export default class FindAllUserResponse {

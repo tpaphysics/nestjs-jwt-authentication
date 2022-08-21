@@ -56,7 +56,7 @@ export class UsersController {
     description: 'The find all users',
     type: FindAllUserResponse,
   })
-  async findAll(@Query() query: findAllUserDto): Promise<any> {
+  async findAll(@Query() query: findAllUserDto): Promise<FindAllUserResponse> {
     return await this.usersService.findAll(query);
   }
 
