@@ -211,7 +211,7 @@ describe('Update', () => {
     expect({ prisma, service }).toBeDefined();
   });
 
-  it('Deve retornar erro se o provider for igual ao usuário corrente', async () => {
+  it('O usuário deve existir', async () => {
     const appointment = {
       date: new Date(2022, 10, 14, 0, 0),
       provider_id: provider.id,
@@ -223,7 +223,7 @@ describe('Update', () => {
     });
   });
 
-  it('Deve retornar erro se o cliente não existir', async () => {
+  it('Deve gerar erro ao tentar agendar em data passada', async () => {
     const appointment = {
       date: new Date(2022, 10, 16, 0, 0),
       provider_id: provider.id,
@@ -237,7 +237,7 @@ describe('Update', () => {
       });
   });
 
-  it('Deve retornar erro se o provider não existir', async () => {
+  it('Deve gerar erro ao tentar agendar ', async () => {
     const appointment = {
       date: new Date(2022, 10, 16, 0, 0),
       provider_id: randomUUID(),

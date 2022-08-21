@@ -18,10 +18,10 @@ import { SetThumbnailUrlAndDeletePasswordInterceptor } from './interceptors/user
   controllers: [UsersController],
   providers: [
     UsersService,
-    {
+    /* {
       provide: APP_INTERCEPTOR,
       useClass: SetThumbnailUrlAndDeletePasswordInterceptor,
-    },
+    },*/
   ],
 })
 export class UsersModule {}

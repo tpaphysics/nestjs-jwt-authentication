@@ -14,6 +14,7 @@ import { User } from './entities/user.entity';
 import * as bycrypt from 'bcrypt';
 import FindAllUserResponse from './model/find-all-users-response.type';
 import { Prisma } from '@prisma/client';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -25,12 +26,13 @@ export class UsersService {
     const hash = await bycrypt.hash(password, 10);
 
     try {
-      return await this.prisma.user.create({
+      const user = await this.prisma.user.create({
         data: {
           ...data,
           password: hash,
         },
       });
+      return plainToClass(User, user);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         // The .code property can be accessed in a type-safe manner

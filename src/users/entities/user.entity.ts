@@ -1,5 +1,6 @@
 import faker from '@faker-js/faker';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
 export class User {
   @ApiProperty({ example: faker.datatype.uuid() })
@@ -9,6 +10,7 @@ export class User {
   @ApiProperty({ example: 'urban' })
   name: string;
   @ApiProperty({ example: 'myPassword' })
+  @Exclude()
   password: string;
   @ApiProperty({ example: 'avatar.png' })
   avatar?: string;
